@@ -1,3 +1,4 @@
+import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -5,14 +6,11 @@ import 'package:flutter/material.dart';
 class Dashboard extends StatefulWidget{
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return DashboardState();
   }
-
 }
 
 class DashboardState extends State<Dashboard>{
-
   final List<String> imgList = [
     'https://images.unsplash.com/photo-1520342868574-5fa3804e551c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=6ff92caffcdd63681a35134a6770ed3b&auto=format&fit=crop&w=1951&q=80',
     'https://images.unsplash.com/photo-1522205408450-add114ad53fe?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=368f45b0888aeb0b7b08e3a1084d3ede&auto=format&fit=crop&w=1950&q=80',
@@ -31,10 +29,64 @@ class DashboardState extends State<Dashboard>{
         child: ListView(
           children: <Widget>[
             _titleText(),
-            _buildCarousalSlider()
+            _buildCarousalSlider(),
+            _startJourney()
           ],
         ),
       ),
+    );
+  }
+
+  Widget _startJourney(){
+    return Card(
+      margin: EdgeInsets.only(top: 10,left: 10,right: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          _userInput(),
+          _goButton()
+        ],
+      ),
+    );
+  }
+
+  Widget _userInput(){
+    return Expanded(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          _buildAutoCompleteText('Source'),
+          _buildAutoCompleteText('Destination')
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAutoCompleteText(String hint){
+    return SimpleAutoCompleteTextField(
+      decoration: InputDecoration(
+          border: InputBorder.none,
+          hintText: hint,
+          hintStyle: TextStyle(fontSize: 20,fontWeight: FontWeight.w200),
+          contentPadding: EdgeInsets.only(left: 15,top: 15,bottom: 15)
+      ),
+      style: TextStyle(fontSize: 20,fontWeight: FontWeight.w400,color: Colors.black),
+    );
+  }
+
+  Widget _goButton(){
+    return RawMaterialButton(
+      onPressed: () {},
+      child: new Icon(
+        Icons.train,
+        color: Colors.blue,
+        size: 30.0,
+      ),
+      shape: new CircleBorder(),
+      elevation: 2.0,
+      fillColor: Colors.white,
+      padding: const EdgeInsets.all(10.0),
     );
   }
 
