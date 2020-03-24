@@ -1,7 +1,10 @@
+
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
+import 'package:timesofmetro/screens/circle_shape.dart';
 
 class Dashboard extends StatefulWidget{
   @override
@@ -25,12 +28,83 @@ class DashboardState extends State<Dashboard>{
     final double statusBarHeight = MediaQuery.of(context).padding.top;
     return Scaffold(
       body: Container(
-        margin: EdgeInsets.only(top: statusBarHeight),
-        child: ListView(
+        padding: EdgeInsets.only(top: statusBarHeight),
+        child: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(image: AssetImage('assets/images/background.png'),
+            fit: BoxFit.cover)
+          ),
+          child: ListView(
+            children: <Widget>[
+              _titleText(),
+              _metroRout()
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _titleText(){
+    return Container(
+      padding: EdgeInsets.only(left: 10,bottom: 15),
+      child: Text('Times of Metro',style: TextStyle(
+        color: Colors.white,
+        fontSize: 35,
+        fontWeight: FontWeight.w300,
+      ),),
+    );
+  }
+
+  Widget _metroRout(){
+    return Card(
+      margin: EdgeInsets.only(left: 15,top: 15,right: 15),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      child: Container(
+        padding: EdgeInsets.only(left: 10,top: 40,bottom: 40,right: 10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            _titleText(),
-            _buildCarousalSlider(),
-            _startJourney()
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Text('Source',style: TextStyle(
+                  fontSize: 20,
+                ),),
+              ],
+            ),
+            Container(
+              margin: EdgeInsets.only(top: 15,bottom: 15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  SizedBox(width: 10,),
+                  CustomPaint(painter: CircleShape(Colors.lightGreen,8)),
+                  Expanded(
+                    child: Container(
+                      margin: EdgeInsets.only(left: 8,right: 6),
+                      child: Divider(
+                        height: 2,
+                        thickness: 2,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  CustomPaint(painter: CircleShape(Colors.red,8)),
+                  SizedBox(width: 10,)
+                ],
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                Text('Destination',style: TextStyle(
+                  fontSize: 20,
+                ),)
+              ],
+            )
           ],
         ),
       ),
@@ -87,17 +161,6 @@ class DashboardState extends State<Dashboard>{
       elevation: 2.0,
       fillColor: Colors.white,
       padding: const EdgeInsets.all(10.0),
-    );
-  }
-
-  Widget _titleText(){
-    return Container(
-      padding: EdgeInsets.only(left: 10,bottom: 15),
-      child: Text('Times of Metro',style: TextStyle(
-        color: Colors.lightGreen,
-        fontSize: 25,
-        fontWeight: FontWeight.w800
-      ),),
     );
   }
 
