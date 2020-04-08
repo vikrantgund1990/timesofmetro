@@ -31,13 +31,23 @@ class DashboardState extends State<Dashboard>{
         padding: EdgeInsets.only(top: statusBarHeight),
         child: Container(
           decoration: BoxDecoration(
-            image: DecorationImage(image: AssetImage('assets/images/background.png'),
-            fit: BoxFit.cover)
+            color: Colors.black,
           ),
-          child: ListView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               _titleText(),
-              _metroRout()
+              Expanded(
+                child: ListView(
+                  children: <Widget>[
+                    _metroRout('Hadapsar','Swargate','ROUTE 1'),
+                    _metroRout('Swargate','Shivajinagar','ROUTE 2'),
+                    _metroRout('Shivajinagar','Hinjewadi','ROUTE 3'),
+                    _metroRout('Shivajinagar','Nigadi','ROUTE 4'),
+                  ],
+                ),
+              )
             ],
           ),
         ),
@@ -47,31 +57,40 @@ class DashboardState extends State<Dashboard>{
 
   Widget _titleText(){
     return Container(
-      padding: EdgeInsets.only(left: 10,bottom: 15),
-      child: Text('Times of Metro',style: TextStyle(
+      padding: EdgeInsets.only(left: 10,bottom: 15,top: 15),
+      child: Text('Journey',style: TextStyle(
         color: Colors.white,
-        fontSize: 35,
-        fontWeight: FontWeight.w300,
+        fontSize: 30,
+        fontFamily: 'Montserrat_ExtraBold'
       ),),
     );
   }
 
-  Widget _metroRout(){
+  Widget _metroRout(String source, String dest, String routName){
     return Card(
-      margin: EdgeInsets.only(left: 15,top: 15,right: 15),
+      margin: EdgeInsets.only(left: 15,bottom: 15,right: 15),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0),
       ),
       child: Container(
-        padding: EdgeInsets.only(left: 10,top: 40,bottom: 40,right: 10),
+        padding: EdgeInsets.only(left: 10,top: 20,bottom: 20,right: 10),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
+            Container(
+              child: Text(routName,style: TextStyle(fontSize: 18,
+                  color: Colors.black54,
+                  fontFamily: 'Montserrat_Medium'
+              ),
+              ),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                Text('Source',style: TextStyle(
+                Text(source,style: TextStyle(
                   fontSize: 20,
+                  color: Colors.black,
+                  fontFamily: 'Montserrat_Regular'
                 ),),
               ],
             ),
@@ -81,14 +100,14 @@ class DashboardState extends State<Dashboard>{
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   SizedBox(width: 10,),
-                  CustomPaint(painter: CircleShape(Colors.lightGreen,8)),
+                  CustomPaint(painter: CircleShape(Colors.green,8)),
                   Expanded(
                     child: Container(
                       margin: EdgeInsets.only(left: 8,right: 6),
                       child: Divider(
                         height: 2,
                         thickness: 2,
-                        color: Colors.black,
+                        color: Colors.black26,
                       ),
                     ),
                   ),
@@ -100,8 +119,10 @@ class DashboardState extends State<Dashboard>{
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                Text('Destination',style: TextStyle(
+                Text(dest,style: TextStyle(
                   fontSize: 20,
+                  color: Colors.black,
+                  fontFamily: 'Montserrat_Regular'
                 ),)
               ],
             )
