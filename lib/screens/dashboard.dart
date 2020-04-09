@@ -23,6 +23,8 @@ class DashboardState extends State<Dashboard>{
     'https://images.unsplash.com/photo-1519985176271-adb1088fa94c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=a0c8d632e977f94e5d312d9893258f59&auto=format&fit=crop&w=1355&q=80'
   ];
 
+  final List<String> stations = ['Hadapsar','Shivajinagar','Swargate','Hinjewadi','Nigadi','Baner'];
+  GlobalKey<AutoCompleteTextFieldState<String>> key = new GlobalKey();
   @override
   Widget build(BuildContext context) {
     final double statusBarHeight = MediaQuery.of(context).padding.top;
@@ -41,10 +43,8 @@ class DashboardState extends State<Dashboard>{
               Expanded(
                 child: ListView(
                   children: <Widget>[
-                    _metroRout('Hadapsar','Swargate','ROUTE 1'),
-                    _metroRout('Swargate','Shivajinagar','ROUTE 2'),
-                    _metroRout('Shivajinagar','Hinjewadi','ROUTE 3'),
-                    _metroRout('Shivajinagar','Nigadi','ROUTE 4'),
+                    _startJourney(),
+                    favouriteJourneyList()
                   ],
                 ),
               )
@@ -66,70 +66,87 @@ class DashboardState extends State<Dashboard>{
     );
   }
 
-  Widget _metroRout(String source, String dest, String routName){
+  Widget favouriteJourneyList(){
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Container(
+          margin: EdgeInsets.only(top: 25,left: 10),
+          child: Text('Favourite Journey',style: TextStyle(
+              fontFamily: 'Montserrat_SemiBold',
+              fontSize: 20,
+              color: Colors.white
+          ),),
+        ),
+        _metroRout('Hadapsar', 'Swargate'),
+        _metroRout('Shivajinagar', 'Wakad'),
+        _metroRout('Laxmi Road', 'Shivajinagar')
+      ],
+    );
+  }
+
+  Widget _metroRout(String source, String dest){
     return Card(
-      margin: EdgeInsets.only(left: 15,bottom: 15,right: 15),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0),
-      ),
-      child: Container(
-        padding: EdgeInsets.only(left: 10,top: 20,bottom: 20,right: 10),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              child: Text(routName,style: TextStyle(fontSize: 18,
-                  color: Colors.black54,
-                  fontFamily: 'Montserrat_Medium'
-              ),
-              ),
+          margin: EdgeInsets.only(left: 15,top: 10,right: 15),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          child: Container(
+            decoration: BoxDecoration(
+                color: Colors.black54
             ),
-            Row(
+            padding: EdgeInsets.only(left: 10,top: 10,bottom: 10,right: 10),
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                Text(source,style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.black,
-                  fontFamily: 'Montserrat_Regular'
-                ),),
-              ],
-            ),
-            Container(
-              margin: EdgeInsets.only(top: 15,bottom: 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  SizedBox(width: 10,),
-                  CustomPaint(painter: CircleShape(Colors.green,8)),
-                  Expanded(
-                    child: Container(
-                      margin: EdgeInsets.only(left: 8,right: 6),
-                      child: Divider(
-                        height: 2,
-                        thickness: 2,
-                        color: Colors.black26,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Text(source,style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white70,
+                        fontFamily: 'Montserrat_Regular'
+                    ),),
+                  ],
+                ),
+                Container(
+                  margin: EdgeInsets.only(top: 15,bottom: 15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      SizedBox(width: 10,),
+                      CustomPaint(painter: CircleShape(Colors.green,8)),
+                      Expanded(
+                        child: Container(
+                          margin: EdgeInsets.only(left: 8,right: 6),
+                          child: Divider(
+                            height: 2,
+                            thickness: 2,
+                            color: Colors.black26,
+                          ),
+                        ),
                       ),
-                    ),
+                      CustomPaint(painter: CircleShape(Colors.red,8)),
+                      SizedBox(width: 10,)
+                    ],
                   ),
-                  CustomPaint(painter: CircleShape(Colors.red,8)),
-                  SizedBox(width: 10,)
-                ],
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Text(dest,style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.black,
-                  fontFamily: 'Montserrat_Regular'
-                ),)
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Text(dest,style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white70,
+                        fontFamily: 'Montserrat_Regular'
+                    ),)
+                  ],
+                )
               ],
-            )
-          ],
-        ),
-      ),
-    );
+            ),
+          ),
+        );
+
   }
 
   Widget _startJourney(){
@@ -152,6 +169,11 @@ class DashboardState extends State<Dashboard>{
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           _buildAutoCompleteText('Source'),
+          Divider(
+            height: 1,
+            thickness: 1,
+            color: Colors.black12,
+          ),
           _buildAutoCompleteText('Destination')
         ],
       ),
@@ -160,13 +182,18 @@ class DashboardState extends State<Dashboard>{
 
   Widget _buildAutoCompleteText(String hint){
     return SimpleAutoCompleteTextField(
+      suggestions: stations,
       decoration: InputDecoration(
           border: InputBorder.none,
           hintText: hint,
-          hintStyle: TextStyle(fontSize: 20,fontWeight: FontWeight.w200),
-          contentPadding: EdgeInsets.only(left: 15,top: 15,bottom: 15)
+          hintStyle: TextStyle(fontSize: 16,
+              fontFamily: 'Montserrat_Regular'
+          ),
+          contentPadding: EdgeInsets.only(left: 15,top: 18,bottom: 18)
       ),
-      style: TextStyle(fontSize: 20,fontWeight: FontWeight.w400,color: Colors.black),
+      style: TextStyle(fontSize: 16,
+          fontFamily: 'Montserrat_Regular',
+          color: Colors.black),
     );
   }
 
