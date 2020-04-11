@@ -44,7 +44,8 @@ class DashboardState extends State<Dashboard>{
                 child: ListView(
                   children: <Widget>[
                     _startJourney(),
-                    favouriteJourneyList()
+                    favouriteJourneyList(),
+                    _importantUpdate()
                   ],
                 ),
               )
@@ -81,7 +82,28 @@ class DashboardState extends State<Dashboard>{
         ),
         _metroRout('Hadapsar', 'Swargate'),
         _metroRout('Shivajinagar', 'Wakad'),
-        _metroRout('Laxmi Road', 'Shivajinagar')
+      ],
+    );
+  }
+
+  Widget _importantUpdate(){
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Container(
+          margin: EdgeInsets.only(top: 25,left: 10),
+          child: Text('Importants Updates',style: TextStyle(
+              fontFamily: 'Montserrat_SemiBold',
+              fontSize: 20,
+              color: Colors.white
+          ),),
+        ),
+        Container(
+          padding: EdgeInsets.all(15),
+          child: Text('I want wrap text as text grows. I searched through and tried wrap with almost everything but still text stays one line and overflows from the screen. Does anyone know how to achieve this? Any help is highly appreciated!',
+            style: TextStyle(color: Colors.white,fontFamily: 'Montserrat_Regular'),),
+        )
       ],
     );
   }
@@ -230,6 +252,91 @@ class DashboardState extends State<Dashboard>{
       autoPlay: true,
       viewportFraction: 0.9,
       enlargeCenterPage: true,
+    );
+
+  }
+
+  Widget _metroRoutWithTime(String source, String dest){
+    return Card(
+      margin: EdgeInsets.only(left: 15,top: 10,right: 15),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+            color: Colors.black54
+        ),
+        padding: EdgeInsets.only(left: 10,top: 10,bottom: 10,right: 10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text('6:10 PM',style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                        fontFamily: 'Montserrat_SemiBold'
+                    ),),
+                    Text(source,style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.green,
+                        fontFamily: 'Montserrat_Regular'
+                    ),)
+                  ],
+                ),
+              ],
+            ),
+            Container(
+              margin: EdgeInsets.only(top: 15,bottom: 15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  SizedBox(width: 10,),
+                  CustomPaint(painter: CircleShape(Colors.green,8)),
+                  Expanded(
+                    child: Container(
+                      margin: EdgeInsets.only(left: 8,right: 6),
+                      child: Divider(
+                        height: 2,
+                        thickness: 2,
+                        color: Colors.black26,
+                      ),
+                    ),
+                  ),
+                  CustomPaint(painter: CircleShape(Colors.lightBlue,8)),
+                  SizedBox(width: 10,)
+                ],
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    Text('7:10 PM',style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                        fontFamily: 'Montserrat_SemiBold'
+                    ),),
+                    Text(dest,style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.lightBlue,
+                        fontFamily: 'Montserrat_Regular'
+                    ),)
+                  ],
+                )
+              ],
+            )
+          ],
+        ),
+      ),
     );
 
   }
