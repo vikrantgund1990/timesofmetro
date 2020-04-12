@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:timesofmetro/screens/dashboard.dart';
+import 'package:timesofmetro/screens/station_list_with_time.dart';
 
 void main() => runApp(MyApp());
 
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.red,
       ),
-      home: Dashboard(),
+      home: StationList(),
     );
   }
 }

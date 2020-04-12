@@ -5,12 +5,14 @@ class CircleShape extends CustomPainter{
   Paint _paint;
   double radius;
 
-  CircleShape(MaterialColor color,this.radius) {
+  CircleShape(Color color,this.radius) {
     _paint = Paint()
       ..color = color
       ..strokeWidth = 10.0
       ..style = PaintingStyle.fill;
   }
+
+
 
   @override
   void paint(Canvas canvas, Size size) {
