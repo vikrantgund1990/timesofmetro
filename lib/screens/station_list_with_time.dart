@@ -86,7 +86,7 @@ class StationList extends StatelessWidget{
         color: Colors.lightBlue,
         boxShadow: [
           BoxShadow(
-              color: Colors.black38,
+              color: Colors.black26,
               blurRadius: 20.0, // has the effect of softening the shadow
               spreadRadius: 1.0, // has the effect of extending the shadow
               offset: Offset(
