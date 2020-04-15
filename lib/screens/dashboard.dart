@@ -3,7 +3,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:timesofmetro/screens/circle_shape.dart';
 import 'package:timesofmetro/screens/journey.dart';
 import 'package:timesofmetro/screens/near_by.dart';
 import 'package:timesofmetro/screens/setting.dart';
@@ -25,12 +24,18 @@ class DashboardState extends State<Dashboard>{
     'https://images.unsplash.com/photo-1519985176271-adb1088fa94c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=a0c8d632e977f94e5d312d9893258f59&auto=format&fit=crop&w=1355&q=80'
   ];
   int _currentIndex = 0;
-  final List<Widget> _children = [JourneyPage(),TrendingNearByPage(),SettingPage()];
+  final List<Widget> _children = [
+    JourneyPage(key: PageStorageKey('jorney')),
+    TrendingNearByPage(key: PageStorageKey('nearby')),
+    SettingPage(key: PageStorageKey('setting'))
+  ];
+  final PageStorageBucket _bucket = PageStorageBucket();
+
   @override
   Widget build(BuildContext context) {
     final double statusBarHeight = MediaQuery.of(context).padding.top;
     return Scaffold(
-      body:_children[_currentIndex],
+      body:PageStorage(child: _children[_currentIndex],bucket: _bucket,),
       bottomNavigationBar:_bottomNavigation(),
     );
   }
@@ -50,7 +55,7 @@ class DashboardState extends State<Dashboard>{
           title: Text('Journey'),
         ),
         new BottomNavigationBarItem(
-          icon: Icon(Icons.business),
+          icon: Icon(Icons.local_activity),
           title: Text('Near By'),
         ),
         new BottomNavigationBarItem(
@@ -66,16 +71,6 @@ class DashboardState extends State<Dashboard>{
       _currentIndex = index;
     });
   }
-
-
-
-
-
-
-
-
-
-
 
   Widget _buildCarousalSlider(){
     return CarouselSlider(
@@ -98,90 +93,4 @@ class DashboardState extends State<Dashboard>{
     );
 
   }
-
-  Widget _metroRoutWithTime(String source, String dest){
-    return Card(
-      margin: EdgeInsets.only(left: 15,top: 10,right: 15),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-            color: Colors.black54
-        ),
-        padding: EdgeInsets.only(left: 10,top: 10,bottom: 10,right: 10),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text('6:10 PM',style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                        fontFamily: 'Montserrat_SemiBold'
-                    ),),
-                    Text(source,style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.green,
-                        fontFamily: 'Montserrat_Regular'
-                    ),)
-                  ],
-                ),
-              ],
-            ),
-            Container(
-              margin: EdgeInsets.only(top: 15,bottom: 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  SizedBox(width: 10,),
-                  CustomPaint(painter: CircleShape(Colors.green,8)),
-                  Expanded(
-                    child: Container(
-                      margin: EdgeInsets.only(left: 8,right: 6),
-                      child: Divider(
-                        height: 2,
-                        thickness: 2,
-                        color: Colors.black26,
-                      ),
-                    ),
-                  ),
-                  CustomPaint(painter: CircleShape(Colors.lightBlue,8)),
-                  SizedBox(width: 10,)
-                ],
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
-                    Text('7:10 PM',style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                        fontFamily: 'Montserrat_SemiBold'
-                    ),),
-                    Text(dest,style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.lightBlue,
-                        fontFamily: 'Montserrat_Regular'
-                    ),)
-                  ],
-                )
-              ],
-            )
-          ],
-        ),
-      ),
-    );
-
-  }
-
 }

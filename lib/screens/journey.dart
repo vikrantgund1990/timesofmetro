@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'circle_shape.dart';
 
 class JourneyPage extends StatefulWidget{
+
+  const JourneyPage({Key key}):super(key:key);
+
   @override
   State<StatefulWidget> createState() {
     return _JourneyState();
