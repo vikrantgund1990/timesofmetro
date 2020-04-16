@@ -17,7 +17,7 @@ class _TrendingNearByState extends State<TrendingNearByPage>{
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Color(0xffeaf4f6),
+      color: Color(0xfff1f7fe ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
@@ -97,7 +97,7 @@ class _TrendingNearByState extends State<TrendingNearByPage>{
             padding: EdgeInsets.only(left: 25),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Container(
                   child: Text('Journey Fare',style: TextStyle(
@@ -106,10 +106,12 @@ class _TrendingNearByState extends State<TrendingNearByPage>{
                     color: Colors.black54
                   ),),
                 ),
+                SizedBox(width: 15),
+                Image.asset('assets/images/rupee_icon.png',width: 16,height: 14,),
                 Container(
-                  margin: EdgeInsets.only(left: 15),
+                  //margin: EdgeInsets.only(left: 5),
                   child: Text('30',style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 15,
                       fontFamily: 'Montserrat_SemiBold',
                       color: Colors.black
                   ),),
@@ -118,7 +120,7 @@ class _TrendingNearByState extends State<TrendingNearByPage>{
             ),
           ),
           Container(
-            padding: EdgeInsets.only(left: 25),
+            padding: EdgeInsets.only(left: 25,top: 2),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -133,7 +135,7 @@ class _TrendingNearByState extends State<TrendingNearByPage>{
                 Container(
                   margin: EdgeInsets.only(left: 15),
                   child: Text('2',style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 15,
                       fontFamily: 'Montserrat_SemiBold',
                       color: Colors.black
                   ),),
