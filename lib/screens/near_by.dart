@@ -16,20 +16,179 @@ class TrendingNearByPage extends StatefulWidget{
 class _TrendingNearByState extends State<TrendingNearByPage>{
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Expanded(
-          child: ListView(
-            children: <Widget>[
-              _newMetroRoutWithTime('Hadapsar', 'Shivajinagar'),
-              _newMetroRoutWithTime('Hadapsar', 'Shivajinagar'),
-              _newMetroRoutWithTime('Hadapsar', 'Shivajinagar'),
-              _newMetroRoutWithTime('Hadapsar', 'Shivajinagar'),
-            ],
+    return Container(
+      color: Color(0xffeaf4f6),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          _appBar(),
+          _userInput(),
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.only(bottom: 20),
+              children: <Widget>[
+                _newMetroRoutWithTime('Hadapsar', 'Shivajinagar'),
+                _newMetroRoutWithTime('Hadapsar', 'Shivajinagar'),
+                _newMetroRoutWithTime('Hadapsar', 'Shivajinagar'),
+                _newMetroRoutWithTime('Hadapsar', 'Shivajinagar'),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _appBar(){
+    return Container(
+      padding: EdgeInsets.only(top: 25),
+      color: Colors.white,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          BackButton(),
+          Container(
+            child: Text('Metro',style: TextStyle(
+                fontFamily: 'Montserrat_SemiBold',
+                fontSize: 20
+            ),),
+          )
+        ],
+      ),
+    ); //
+  }
+
+  Widget _userInput(){
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            padding:EdgeInsets.only(left: 25,top: 20,bottom: 10),
+            child:Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.only(right: 15),
+                  child: Text('Shivajinagar',style: TextStyle(
+                      fontSize: 20,
+                      fontFamily: 'Montserrat_ExtraBold',
+                      color: Colors.black
+                  ),),
+                ),
+                Icon(
+                  Icons.arrow_forward,
+                  color: Colors.black54,
+                ),
+                Container(
+                  padding: EdgeInsets.only(left: 15),
+                  child: Text('Hinjewadi',style: TextStyle(
+                      fontSize: 20,
+                      fontFamily: 'Montserrat_ExtraBold',
+                      color: Colors.orange
+                  ),),
+                )
+              ],
+            ),
           ),
-        )
-      ],
+          Container(
+            padding: EdgeInsets.only(left: 25),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  child: Text('Journey Fare',style: TextStyle(
+                    fontSize: 14,
+                    fontFamily: 'Montserrat_SemiBold',
+                    color: Colors.black54
+                  ),),
+                ),
+                Container(
+                  margin: EdgeInsets.only(left: 15),
+                  child: Text('30',style: TextStyle(
+                      fontSize: 14,
+                      fontFamily: 'Montserrat_SemiBold',
+                      color: Colors.black
+                  ),),
+                )
+              ],
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.only(left: 25),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  child: Text('Plateform No',style: TextStyle(
+                      fontSize: 14,
+                      fontFamily: 'Montserrat_SemiBold',
+                      color: Colors.black54
+                  ),),
+                ),
+                Container(
+                  margin: EdgeInsets.only(left: 15),
+                  child: Text('2',style: TextStyle(
+                      fontSize: 14,
+                      fontFamily: 'Montserrat_SemiBold',
+                      color: Colors.black
+                  ),),
+                )
+              ],
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.only(top: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Text('Your next metro will arrive in',style: TextStyle(
+                  fontSize: 16,
+                  fontFamily: 'Montserrat_Regular',
+                  color: Colors.red
+                ),)
+              ],
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.only(top: 10,bottom: 15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.only(top: 15,left: 30,right: 30,bottom: 15),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(25)),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 18.0, // has the effect of softening the shadow
+                            spreadRadius: 4.0, // has the effect of extending the shadow
+                            offset: Offset(
+                              5.0, // horizontal, move right 10
+                              1.0, // vertical, move down 10
+                            )
+                        )
+                      ]
+                  ),
+                  child: Text('00:01:20',style: TextStyle(
+                      fontSize: 18,
+                      fontFamily: 'Montserrat_ExtraBold',
+                      color: Colors.black
+                  ),),
+                )
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 
@@ -42,16 +201,58 @@ class _TrendingNearByState extends State<TrendingNearByPage>{
       child: Container(
         padding: EdgeInsets.only(top: 20,bottom: 20,left: 10),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            _metroStationPoints(),
-            _metroStationNameAndTime()
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                _metroStationPoints(),
+                _metroStationNameAndTime(),
+              ],
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                SizedBox(height: 38),
+                Container(
+                  padding: EdgeInsets.only(right: 10),
+                  child: Icon(
+                    Icons.arrow_forward_ios,
+                    color: Colors.black26,
+                    size: 15,
+                  ),
+                )
+              ],
+            )
           ],
         ),
       ),
     );
   }
+
+  /*Widget _faresAndOtherSummary(){
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text('Plateform: 01',style: TextStyle(
+                fontSize: 14,
+                fontFamily: 'Montserrat_Regular',
+                color: Colors.blueAccent
+
+            ),)
+          ],
+        )
+      ],
+    );
+  }*/
 
   Widget _time(String time){
     return Container(
@@ -80,18 +281,18 @@ class _TrendingNearByState extends State<TrendingNearByPage>{
   Widget _metroStationNameAndTime(){
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             _time('10:12 AM'),
-            _stationName('Hadasar')
+            _stationName('Hadapsar')
           ],
         ),
         SizedBox(height: 18),
-        Container(child: Text('10 Km -- 18:10 min',style: TextStyle(fontSize: 12,fontFamily: 'Montserrat_Regular')),),
+        Container(padding: EdgeInsets.only(left: 20),child: Text('10 Km -- 18:10 min -- 6 Halts',style: TextStyle(fontSize: 12,fontFamily: 'Montserrat_Regular')),),
         SizedBox(height: 18),
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -135,7 +336,7 @@ class _TrendingNearByState extends State<TrendingNearByPage>{
      ),
       child: Stack(
         children: <Widget>[
-          CustomPaint(painter: CircleShape(Colors.green,10)),
+          CustomPaint(painter: CircleShape(Colors.black,10)),
           CustomPaint(painter: CircleShape(Colors.white,4))
         ],
       ),
@@ -160,7 +361,7 @@ class _TrendingNearByState extends State<TrendingNearByPage>{
       ),
       child: Stack(
         children: <Widget>[
-          CustomPaint(painter: CircleShape(Colors.orangeAccent,10)),
+          CustomPaint(painter: CircleShape(Colors.orange,10)),
           CustomPaint(painter: CircleShape(Colors.white,4))
         ],
       ),
