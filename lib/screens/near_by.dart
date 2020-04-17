@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:timesofmetro/utils/resource_utility.dart';
 
 import 'circle_shape.dart';
 
@@ -17,21 +18,24 @@ class _TrendingNearByState extends State<TrendingNearByPage>{
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Color(0xfff1f7fe ),
+      color: ColorResource.AppBackground,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           _appBar(),
           _userInput(),
           Expanded(
-            child: ListView(
-              padding: EdgeInsets.only(bottom: 20),
-              children: <Widget>[
-                _newMetroRoutWithTime('Hadapsar', 'Shivajinagar'),
-                _newMetroRoutWithTime('Hadapsar', 'Shivajinagar'),
-                _newMetroRoutWithTime('Hadapsar', 'Shivajinagar'),
-                _newMetroRoutWithTime('Hadapsar', 'Shivajinagar'),
-              ],
+            child: Container(
+              margin: EdgeInsets.only(bottom: 10),
+              child: ListView(
+                padding: EdgeInsets.only(bottom: 20),
+                children: <Widget>[
+                  _newMetroRoutWithTime('Hadapsar', 'Shivajinagar'),
+                  _newMetroRoutWithTime('Hadapsar', 'Shivajinagar'),
+                  _newMetroRoutWithTime('Hadapsar', 'Shivajinagar'),
+                  _newMetroRoutWithTime('Hadapsar', 'Shivajinagar'),
+                ],
+              ),
             ),
           )
         ],

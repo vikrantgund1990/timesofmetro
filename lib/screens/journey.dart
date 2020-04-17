@@ -1,5 +1,6 @@
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:timesofmetro/utils/resource_utility.dart';
 
 import 'circle_shape.dart';
 
@@ -23,7 +24,7 @@ class _JourneyState extends State<JourneyPage>{
       padding: EdgeInsets.only(top: statusBarHeight),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.black,
+          color: ColorResource.AppBackground,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -50,7 +51,7 @@ class _JourneyState extends State<JourneyPage>{
     return Container(
       padding: EdgeInsets.only(left: 10,bottom: 15,top: 15),
       child: Text('Journey',style: TextStyle(
-          color: Colors.white,
+          color: Colors.black,
           fontSize: 30,
           fontFamily: 'Montserrat_ExtraBold'
       ),),
@@ -130,7 +131,7 @@ class _JourneyState extends State<JourneyPage>{
           child: Text('Favourite Journey',style: TextStyle(
               fontFamily: 'Montserrat_SemiBold',
               fontSize: 20,
-              color: Colors.white
+              color: Colors.black
           ),),
         ),
         _metroRout('Hadapsar', 'Swargate'),
@@ -149,13 +150,13 @@ class _JourneyState extends State<JourneyPage>{
           child: Text('Importants Updates',style: TextStyle(
               fontFamily: 'Montserrat_SemiBold',
               fontSize: 20,
-              color: Colors.white
+              color: Colors.black
           ),),
         ),
         Container(
           padding: EdgeInsets.all(15),
           child: Text('I want wrap text as text grows. I searched through and tried wrap with almost everything but still text stays one line and overflows from the screen. Does anyone know how to achieve this? Any help is highly appreciated!',
-            style: TextStyle(color: Colors.white,fontFamily: 'Montserrat_Regular'),),
+            style: TextStyle(color: Colors.black87,fontFamily: 'Montserrat_Regular'),),
         )
       ],
     );
@@ -164,13 +165,11 @@ class _JourneyState extends State<JourneyPage>{
   Widget _metroRout(String source, String dest){
     return Card(
       margin: EdgeInsets.only(left: 15,top: 10,right: 15),
+      color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
       child: Container(
-        decoration: BoxDecoration(
-            color: Colors.black54
-        ),
         padding: EdgeInsets.only(left: 10,top: 10,bottom: 10,right: 10),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -180,8 +179,8 @@ class _JourneyState extends State<JourneyPage>{
               children: <Widget>[
                 Text(source,style: TextStyle(
                     fontSize: 16,
-                    color: Colors.white70,
-                    fontFamily: 'Montserrat_Regular'
+                    color: Colors.black,
+                    fontFamily: 'Montserrat_SemiBold'
                 ),),
               ],
             ),
@@ -191,7 +190,7 @@ class _JourneyState extends State<JourneyPage>{
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   SizedBox(width: 10,),
-                  CustomPaint(painter: CircleShape(Colors.green,8)),
+                  CustomPaint(painter: CircleShape(Colors.green,10)),
                   Expanded(
                     child: Container(
                       margin: EdgeInsets.only(left: 8,right: 6),
@@ -202,7 +201,7 @@ class _JourneyState extends State<JourneyPage>{
                       ),
                     ),
                   ),
-                  CustomPaint(painter: CircleShape(Colors.red,8)),
+                  CustomPaint(painter: CircleShape(Colors.red,10)),
                   SizedBox(width: 10,)
                 ],
               ),
@@ -212,8 +211,8 @@ class _JourneyState extends State<JourneyPage>{
               children: <Widget>[
                 Text(dest,style: TextStyle(
                     fontSize: 16,
-                    color: Colors.white70,
-                    fontFamily: 'Montserrat_Regular'
+                    color: Colors.orange,
+                    fontFamily: 'Montserrat_SemiBold'
                 ),)
               ],
             )

@@ -1,11 +1,13 @@
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:timesofmetro/screens/journey.dart';
 import 'package:timesofmetro/screens/near_by.dart';
 import 'package:timesofmetro/screens/setting.dart';
+import 'package:timesofmetro/utils/resource_utility.dart';
 
 class Dashboard extends StatefulWidget{
   @override
@@ -41,6 +43,39 @@ class DashboardState extends State<Dashboard>{
   }
 
   Widget _bottomNavigation(){
+    return CurvedNavigationBar(
+      height: 50,
+      onTap: onTabTapped,
+      animationDuration: Duration(milliseconds: 300),
+      buttonBackgroundColor: ColorResource.AppBackground,
+      backgroundColor: ColorResource.AppBackground,
+      items: <Widget>[
+        /*Icon(Icons.directions_transit,size: 30,),
+        Icon(Icons.local_activity,size: 30,),
+        Icon(Icons.settings,size: 30,)*/
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Icon(Icons.directions_transit,size: 30,),
+          ],
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Icon(Icons.local_activity,size: 30,)
+          ],
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Icon(Icons.settings,size: 30,)
+          ],
+        ),
+      ],
+    );
+  }
+
+  /*Widget _bottomNavigation(){
     return BottomNavigationBar(
       onTap: onTabTapped,
       currentIndex: _currentIndex,
@@ -64,7 +99,7 @@ class DashboardState extends State<Dashboard>{
         )
       ],
     );
-  }
+  }*/
 
   void onTabTapped(int index) {
     setState(() {
