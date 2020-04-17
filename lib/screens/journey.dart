@@ -20,28 +20,39 @@ class _JourneyState extends State<JourneyPage>{
   @override
   Widget build(BuildContext context) {
     final double statusBarHeight = MediaQuery.of(context).padding.top;
-    return Container(
-      padding: EdgeInsets.only(top: statusBarHeight),
-      child: Container(
-        decoration: BoxDecoration(
-          color: ColorResource.AppBackground,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Journey',style: TextStyle(
+        color: Colors.black,
+        fontSize: 30,
+        fontFamily: 'Montserrat_ExtraBold'
+        )
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            _titleText(),
-            Expanded(
-              child: ListView(
-                padding: EdgeInsets.only(bottom: 10),
-                children: <Widget>[
-                  _startJourney(),
-                  favouriteJourneyList(),
-                  _importantUpdate()
-                ],
-              ),
-            )
-          ],
+        backgroundColor: Colors.white,
+      ),
+      body: Container(
+        padding: EdgeInsets.only(top: statusBarHeight),
+        child: Container(
+          decoration: BoxDecoration(
+            color: ColorResource.AppBackground,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+             // _titleText(),
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.only(bottom: 10),
+                  children: <Widget>[
+                    _startJourney(),
+                    favouriteJourneyList(),
+                    _importantUpdate()
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

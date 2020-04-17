@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:timesofmetro/utils/resource_utility.dart';
 
 class SettingPage extends StatefulWidget{
 
@@ -13,7 +14,7 @@ class SettingPage extends StatefulWidget{
 class _SettingState extends State<SettingPage>{
   @override
   Widget build(BuildContext context) {
-    return Container(color: Colors.black12,);
+    return Container(color: ColorResource.AppBackground,);
   }
 
 }
