@@ -1,5 +1,6 @@
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:timesofmetro/screens/metro_list.dart';
 import 'package:timesofmetro/utils/resource_utility.dart';
 
 import 'circle_shape.dart';
@@ -117,9 +118,16 @@ class _JourneyState extends State<JourneyPage>{
     );
   }
 
+  void _navigateToMetroList(){
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MetroList()),
+    );
+  }
+
   Widget _goButton(){
     return RawMaterialButton(
-      onPressed: () {},
+      onPressed: _navigateToMetroList,
       child: new Icon(
         Icons.train,
         color: Colors.blue,
@@ -139,14 +147,14 @@ class _JourneyState extends State<JourneyPage>{
       children: <Widget>[
         Container(
           margin: EdgeInsets.only(top: 25,left: 10),
-          child: Text('Favourite Journey',style: TextStyle(
+          child: Text('Favourite Routs',style: TextStyle(
               fontFamily: 'Montserrat_SemiBold',
-              fontSize: 20,
+              fontSize: 18,
               color: Colors.black
           ),),
         ),
-        _metroRout('Hadapsar', 'Swargate'),
-        _metroRout('Shivajinagar', 'Wakad'),
+        _metroRoutWithTime('Hadapsar', 'Swargate'),
+        _metroRoutWithTime('Shivajinagar', 'Wakad'),
       ],
     );
   }
@@ -160,7 +168,7 @@ class _JourneyState extends State<JourneyPage>{
           margin: EdgeInsets.only(top: 25,left: 10),
           child: Text('Importants Updates',style: TextStyle(
               fontFamily: 'Montserrat_SemiBold',
-              fontSize: 20,
+              fontSize: 18,
               color: Colors.black
           ),),
         ),
@@ -231,7 +239,173 @@ class _JourneyState extends State<JourneyPage>{
         ),
       ),
     );
+  }
 
+  Widget _metroRoutWithTime(String source, String dest){
+    return GestureDetector(
+      onTap: _navigateToMetroList,
+      child: Card(
+        margin: EdgeInsets.only(left: 15,top: 10,right: 15),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        child: Container(
+          padding: EdgeInsets.only(top: 20,bottom: 20,left: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  _metroStationPoints(),
+                  _metroStationNameAndTime(),
+                ],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(height: 38),
+                  Container(
+                    padding: EdgeInsets.only(right: 10),
+                    child: Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.black26,
+                      size: 15,
+                    ),
+                  )
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _stationName(String name){
+    return Container(
+      padding: EdgeInsets.only(left: 20),
+      child: Text(name,
+        style: TextStyle(
+            fontFamily: 'Montserrat_Medium',
+            fontSize: 16,
+            color: Colors.black87
+        ),
+      ),
+    );
+  }
+
+  Widget _metroStationNameAndTime(){
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            _stationName('Hadapsar')
+          ],
+        ),
+        SizedBox(height: 38),
+        //Container(padding: EdgeInsets.only(left: 20),child: Text('10 Km -- 18:10 min -- 6 Halts',style: TextStyle(fontSize: 12,fontFamily: 'Montserrat_Regular')),),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            _stationName('Swargate')
+          ],
+        )
+      ],
+    );
+  }
+
+  Widget _metroStationPoints(){
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        _stationPoint(),
+        _verticalLine(),
+        _destStationPoint()
+      ],
+    );
+  }
+
+  Widget _stationPoint(){
+    return Container(
+      margin: EdgeInsets.only(left: 20,top: 10),
+      decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+                color: Colors.lightGreen,
+                blurRadius: 20.0, // has the effect of softening the shadow
+                spreadRadius: 6.0, // has the effect of extending the shadow
+                offset: Offset(
+                  5.0, // horizontal, move right 10
+                  1.0, // vertical, move down 10
+                )
+            )
+          ]
+      ),
+      child: Stack(
+        children: <Widget>[
+          CustomPaint(painter: CircleShape(Colors.black,10)),
+          CustomPaint(painter: CircleShape(Colors.white,4))
+        ],
+      ),
+    );
+  }
+
+  Widget _destStationPoint(){
+    return Container(
+      margin: EdgeInsets.only(left: 20,top: 9),
+      decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+                color: Colors.orangeAccent,
+                blurRadius: 20.0, // has the effect of softening the shadow
+                spreadRadius: 6.0, // has the effect of extending the shadow
+                offset: Offset(
+                  5.0, // horizontal, move right 10
+                  1.0, // vertical, move down 10
+                )
+            )
+          ]
+      ),
+      child: Stack(
+        children: <Widget>[
+          CustomPaint(painter: CircleShape(Colors.orange,10)),
+          CustomPaint(painter: CircleShape(Colors.white,4))
+        ],
+      ),
+    );
+  }
+
+  Widget _verticalLine(){
+    return Container(
+      margin: EdgeInsets.only(left: 18,top: 9),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(3)),
+          color: Colors.black26,
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black26,
+                blurRadius: 20.0, // has the effect of softening the shadow
+                spreadRadius: 1.0, // has the effect of extending the shadow
+                offset: Offset(
+                  1.0, // horizontal, move right 10
+                  1.0, // vertical, move down 10
+                )
+            )
+          ]
+      ),
+      width: 5,
+      height: 40,
+    );
   }
 
 }
