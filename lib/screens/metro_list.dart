@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:timesofmetro/screens/station_list_with_time.dart';
@@ -5,53 +7,81 @@ import 'package:timesofmetro/utils/resource_utility.dart';
 
 import 'circle_shape.dart';
 
-class MetroList extends StatefulWidget{
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  _SliverAppBarDelegate({
+    @required this.minHeight,
+    @required this.maxHeight,
+    @required this.child,
+  });
+
+  final double minHeight;
+  final double maxHeight;
+  final Widget child;
+
+  @override
+  double get minExtent => minHeight;
+
+  @override
+  double get maxExtent => math.max(maxHeight, minHeight);
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return new SizedBox.expand(child: child);
+  }
+
+  @override
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
+    return maxHeight != oldDelegate.maxHeight ||
+        minHeight != oldDelegate.minHeight ||
+        child != oldDelegate.child;
+  }
+}
+
+class MetroList extends StatefulWidget {
   @override
   State<MetroList> createState() {
     return _MetroListState();
   }
 }
 
-class _MetroListState extends State<MetroList>{
+class _MetroListState extends State<MetroList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _appBar(),
-      body: Container(
-        color: ColorResource.AppBackground,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            //_appBar(),
-            _journeyDetails(),
-            Expanded(
-              child: Container(
-                child: ListView(
-                  padding: EdgeInsets.only(bottom: 20),
-                  children: <Widget>[
-                    _metroRoutWithTime('Hadapsar', 'Shivajinagar'),
-                    _metroRoutWithTime('Hadapsar', 'Shivajinagar'),
-                    _metroRoutWithTime('Hadapsar', 'Shivajinagar'),
-                    _metroRoutWithTime('Hadapsar', 'Shivajinagar'),
-                  ],
+        appBar: _appBar(),
+        body: Container(
+
+            color: ColorResource.AppBackground,
+            child: CustomScrollView(
+              slivers: <Widget>[
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                    return _journeyDetails();
+                  }, childCount: 1),
                 ),
-              ),
-            )
-          ],
-        ),
-      )
-    );
+                _timer(),
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                    return _metroRoutWithTime('Hadapsar', 'Swargate');
+                  }, childCount: 3),
+                )
+              ],
+            )));
   }
 
-  Widget _appBar(){
+  Widget _appBar() {
     return AppBar(
-      title: Text('Metro List',style: TextStyle(fontSize: 20,
-          color: Colors.black,
-          fontFamily: FontResource.MontserratSemiBold
-      ),),
-      leading: BackButton(
-          color: Colors.black
+      title: Text(
+        'Metro List',
+        style: TextStyle(
+            fontSize: 20,
+            color: Colors.black,
+            fontFamily: FontResource.MontserratSemiBold),
       ),
+      leading: BackButton(color: Colors.black),
       backgroundColor: Colors.white,
       centerTitle: true,
       actions: <Widget>[
@@ -63,239 +93,296 @@ class _MetroListState extends State<MetroList>{
     ); //
   }
 
-  Widget _journeyDetails(){
+  Widget _journeyDetails() {
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
-            padding:EdgeInsets.only(left: 25,top: 20,bottom: 10),
-            child:Row(
+            padding: EdgeInsets.only(left: 25, top: 20, bottom: 10),
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Container(
                   padding: EdgeInsets.only(right: 15),
-                  child: Text('Shivajinagar',style: TextStyle(
-                      fontSize: 20,
-                      fontFamily: 'Montserrat_ExtraBold',
-                      color: Colors.black
-                  ),),
-                ),
-                Icon(
-                  Icons.arrow_forward,
-                  color: Colors.black54,
-                ),
-                Container(
-                  padding: EdgeInsets.only(left: 15),
-                  child: Text('Wakad',style: TextStyle(
-                      fontSize: 20,
-                      fontFamily: 'Montserrat_ExtraBold',
-                      color: Colors.orange
-                  ),),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.only(left: 25),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  child: Text('Journey Fare',style: TextStyle(
-                      fontSize: 14,
-                      fontFamily: 'Montserrat_SemiBold',
-                      color: Colors.black54
-                  ),),
-                ),
-                SizedBox(width: 15),
-                Image.asset('assets/images/rupee_icon.png',width: 16,height: 14,),
-                Container(
-                  //margin: EdgeInsets.only(left: 5),
-                  child: Text('30',style: TextStyle(
-                      fontSize: 15,
-                      fontFamily: 'Montserrat_SemiBold',
-                      color: Colors.black
-                  ),),
-                )
-              ],
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.only(left: 25,top: 2),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  child: Text('Plateform No',style: TextStyle(
-                      fontSize: 14,
-                      fontFamily: 'Montserrat_SemiBold',
-                      color: Colors.black54
-                  ),),
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: 15),
-                  child: Text('2',style: TextStyle(
-                      fontSize: 15,
-                      fontFamily: 'Montserrat_SemiBold',
-                      color: Colors.black
-                  ),),
-                )
-              ],
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.only(left: 10,top: 15),
-            child: Text('You need change metro at Wakad to travel Hinjewadi',style: TextStyle(
-                fontFamily: FontResource.MontserratSemiBold,
-                color: Colors.red,
-                fontSize: 14
-            ),),
-          ),
-          Container(
-            padding:EdgeInsets.only(left: 25,top: 20,bottom: 10),
-            child:Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.only(right: 15),
-                  child: Text('Wakad',style: TextStyle(
-                      fontSize: 20,
-                      fontFamily: 'Montserrat_ExtraBold',
-                      color: Colors.orange
-                  ),),
-                ),
-                Icon(
-                  Icons.arrow_forward,
-                  color: Colors.black54,
-                ),
-                Container(
-                  padding: EdgeInsets.only(left: 15),
-                  child: Text('Hinjewadi',style: TextStyle(
-                      fontSize: 20,
-                      fontFamily: 'Montserrat_ExtraBold',
-                      color: Colors.black
-                  ),),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.only(left: 25),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  child: Text('Journey Fare',style: TextStyle(
-                      fontSize: 14,
-                      fontFamily: 'Montserrat_SemiBold',
-                      color: Colors.black54
-                  ),),
-                ),
-                SizedBox(width: 15),
-                Image.asset('assets/images/rupee_icon.png',width: 16,height: 14,),
-                Container(
-                  //margin: EdgeInsets.only(left: 5),
-                  child: Text('30',style: TextStyle(
-                      fontSize: 15,
-                      fontFamily: 'Montserrat_SemiBold',
-                      color: Colors.black
-                  ),),
-                )
-              ],
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.only(left: 25,top: 2),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  child: Text('Plateform No',style: TextStyle(
-                      fontSize: 14,
-                      fontFamily: 'Montserrat_SemiBold',
-                      color: Colors.black54
-                  ),),
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: 15),
-                  child: Text('2',style: TextStyle(
-                      fontSize: 15,
-                      fontFamily: 'Montserrat_SemiBold',
-                      color: Colors.black
-                  ),),
-                )
-              ],
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.only(top: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Text('Your next metro will arrive in',style: TextStyle(
-                    fontSize: 16,
-                    fontFamily: 'Montserrat_Regular',
-                    color: Colors.red
-                ),)
-              ],
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.only(top: 10,bottom: 15),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.only(top: 15,left: 30,right: 30,bottom: 15),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(25)),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 18.0, // has the effect of softening the shadow
-                            spreadRadius: 4.0, // has the effect of extending the shadow
-                            offset: Offset(
-                              5.0, // horizontal, move right 10
-                              1.0, // vertical, move down 10
-                            )
-                        )
-                      ]
+                  child: Text(
+                    'Shivajinagar',
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'Montserrat_ExtraBold',
+                        color: Colors.black),
                   ),
-                  child: Text('00:01:20',style: TextStyle(
-                      fontSize: 18,
-                      fontFamily: 'Montserrat_ExtraBold',
-                      color: Colors.black
-                  ),),
+                ),
+                Icon(
+                  Icons.arrow_forward,
+                  color: Colors.black54,
+                ),
+                Container(
+                  padding: EdgeInsets.only(left: 15),
+                  child: Text(
+                    'Wakad',
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'Montserrat_ExtraBold',
+                        color: Colors.orange),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.only(left: 25),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  child: Text(
+                    'Journey Fare',
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontFamily: 'Montserrat_SemiBold',
+                        color: Colors.black54),
+                  ),
+                ),
+                SizedBox(width: 15),
+                Image.asset(
+                  'assets/images/rupee_icon.png',
+                  width: 16,
+                  height: 14,
+                ),
+                Container(
+                  //margin: EdgeInsets.only(left: 5),
+                  child: Text(
+                    '30',
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontFamily: 'Montserrat_SemiBold',
+                        color: Colors.black),
+                  ),
                 )
               ],
             ),
-          )
+          ),
+          Container(
+            padding: EdgeInsets.only(left: 25, top: 2),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  child: Text(
+                    'Plateform No',
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontFamily: 'Montserrat_SemiBold',
+                        color: Colors.black54),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(left: 15),
+                  child: Text(
+                    '2',
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontFamily: 'Montserrat_SemiBold',
+                        color: Colors.black),
+                  ),
+                )
+              ],
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(left: 25, top: 15),
+            child: Text(
+              'Take next metro from Wakad to travel Hinjewadi',
+              style: TextStyle(
+                  fontFamily: FontResource.MontserratSemiBold,
+                  color: Colors.red,
+                  fontSize: 14),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.only(left: 25, top: 20, bottom: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.only(right: 15),
+                  child: Text(
+                    'Wakad',
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'Montserrat_ExtraBold',
+                        color: Colors.orange),
+                  ),
+                ),
+                Icon(
+                  Icons.arrow_forward,
+                  color: Colors.black54,
+                ),
+                Container(
+                  padding: EdgeInsets.only(left: 15),
+                  child: Text(
+                    'Hinjewadi',
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'Montserrat_ExtraBold',
+                        color: Colors.black),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.only(left: 25),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  child: Text(
+                    'Journey Fare',
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontFamily: 'Montserrat_SemiBold',
+                        color: Colors.black54),
+                  ),
+                ),
+                SizedBox(width: 15),
+                Image.asset(
+                  'assets/images/rupee_icon.png',
+                  width: 16,
+                  height: 14,
+                ),
+                Container(
+                  //margin: EdgeInsets.only(left: 5),
+                  child: Text(
+                    '30',
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontFamily: 'Montserrat_SemiBold',
+                        color: Colors.black),
+                  ),
+                )
+              ],
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.only(left: 25, top: 2),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  child: Text(
+                    'Plateform No',
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontFamily: 'Montserrat_SemiBold',
+                        color: Colors.black54),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(left: 15),
+                  child: Text(
+                    '2',
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontFamily: 'Montserrat_SemiBold',
+                        color: Colors.black),
+                  ),
+                )
+              ],
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _metroRoutWithTime(String source, String dest){
+  Widget _timer() {
+    return SliverPersistentHeader(
+      pinned: true,
+      delegate: _SliverAppBarDelegate(
+          minHeight: 120,
+          maxHeight: 150,
+          child: Container(
+            color: ColorResource.AppBackground,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.only(top: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        'Your next metro will arrive in',
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontFamily: 'Montserrat_Regular',
+                            color: Colors.red),
+                      )
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.only(top: 10, bottom: 15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.only(
+                            top: 15, left: 30, right: 30, bottom: 15),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(25)),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: 18.0,
+                                  // has the effect of softening the shadow
+                                  spreadRadius: 4.0,
+                                  // has the effect of extending the shadow
+                                  offset: Offset(
+                                    5.0, // horizontal, move right 10
+                                    1.0, // vertical, move down 10
+                                  ))
+                            ]),
+                        child: Text(
+                          '00:01:20',
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontFamily: 'Montserrat_ExtraBold',
+                              color: Colors.black),
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+          )),
+    );
+  }
+
+  Widget _metroRoutWithTime(String source, String dest) {
     return GestureDetector(
       onTap: _navigateToRoutDetails,
       child: Card(
-        margin: EdgeInsets.only(left: 15,top: 10,right: 15),
+        margin: EdgeInsets.only(left: 15, right: 15,bottom: 15),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),
         ),
         child: Container(
-          padding: EdgeInsets.only(top: 20,bottom: 20,left: 10),
+          padding: EdgeInsets.only(top: 20, bottom: 20, left: 10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -331,117 +418,125 @@ class _MetroListState extends State<MetroList>{
     );
   }
 
-  Widget _time(String time){
+  Widget _time(String time) {
     return Container(
       padding: EdgeInsets.only(left: 20),
-      child: Text(time,style: TextStyle(
-          fontFamily: 'Montserrat_SemiBold',
-          fontSize: 16,
-          color: Colors.black
-      ),),
-    );
-  }
-
-  Widget _stationName(String name){
-    return Container(
-      padding: EdgeInsets.only(left: 5),
-      child: Text(name,
+      child: Text(
+        time,
         style: TextStyle(
-            fontFamily: 'Montserrat_Medium',
-            fontSize: 12,
-            color: Colors.black54
-        ),
+            fontFamily: 'Montserrat_SemiBold',
+            fontSize: 16,
+            color: Colors.black),
       ),
     );
   }
 
-  Widget _metroStationNameAndTime(){
+  Widget _stationName(String name) {
+    return Container(
+      padding: EdgeInsets.only(left: 5),
+      child: Text(
+        name,
+        style: TextStyle(
+            fontFamily: 'Montserrat_Medium',
+            fontSize: 12,
+            color: Colors.black54),
+      ),
+    );
+  }
+
+  Widget _metroStationNameAndTime() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: _metroStationNameAndTimeColumn(3)/*<Widget>[
+      children: _metroStationNameAndTimeColumn(
+          3) /*<Widget>[
         _getTimeAndStationRow('10:12 AM','Hadasar'),
         SizedBox(height: 18),
         _distDurationHaltsText('10','18:12','5'),
         SizedBox(height: 18),
         _getTimeAndStationRow('10:12 AM','Hadasar'),
-      ]*/,
+      ]*/
+      ,
     );
   }
 
-  List<Widget> _metroStationNameAndTimeColumn(int noOfStations){
+  List<Widget> _metroStationNameAndTimeColumn(int noOfStations) {
     List<Widget> col = [];
-    for(int i = 0; i < noOfStations; i++){
-      if(i == 0){
-        col.add(_getTimeAndStationRow('10:12 AM','Hadasar'));
+    for (int i = 0; i < noOfStations; i++) {
+      if (i == 0) {
+        col.add(_getTimeAndStationRow('10:12 AM', 'Hadasar'));
         col.add(SizedBox(height: 18));
-        col.add(_distDurationHaltsText('10','18:12','5'));
-      }else if( i == (noOfStations - 1)){
+        col.add(_distDurationHaltsText('10', '18:12', '5'));
+      } else if (i == (noOfStations - 1)) {
         col.add(SizedBox(height: 18));
-        col.add(_getTimeAndStationRow('10:12 AM','AAAAAA'));
-      }else{
+        col.add(_getTimeAndStationRow('10:12 AM', 'AAAAAA'));
+      } else {
         col.add(SizedBox(height: 18));
-        col.add(_getInBetweenRow('10:12 AM','Shivajinagar'));
+        col.add(_getInBetweenRow('10:12 AM', 'Shivajinagar'));
         col.add(SizedBox(height: 18));
-        col.add(_distDurationHaltsText('10','18:12','5'));
+        col.add(_distDurationHaltsText('10', '18:12', '5'));
       }
     }
     return col;
   }
 
-  Widget _distDurationHaltsText(String dist, String duration, String halts){
-    return Container(padding: EdgeInsets.only(left: 20),child: Text('$dist Km ___ $duration min ___ $halts Halts',
-        style: TextStyle(fontSize: 12,fontFamily: 'Montserrat_Regular')),);
-  }
-
-  Widget _getTimeAndStationRow(String time,String station){
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        _time(time),
-        _stationName(station)
-      ],
+  Widget _distDurationHaltsText(String dist, String duration, String halts) {
+    return Container(
+      padding: EdgeInsets.only(left: 20),
+      child: Text('$dist Km ___ $duration min ___ $halts Halts',
+          style: TextStyle(fontSize: 12, fontFamily: 'Montserrat_Regular')),
     );
   }
 
-  Widget _getInBetweenRow(String time,String station){
+  Widget _getTimeAndStationRow(String time, String station) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[_time(time), _stationName(station)],
+    );
+  }
+
+  Widget _getInBetweenRow(String time, String station) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         _time(time),
         _stationName(station),
-        Text('(Change Metro Here)',style: TextStyle(
-          fontFamily: FontResource.MontserratMedium,
-          color: Colors.red,
-          fontSize: 12
-        ),)
+        Text(
+          '(Change Metro Here)',
+          style: TextStyle(
+              fontFamily: FontResource.MontserratMedium,
+              color: Colors.red,
+              fontSize: 12),
+        )
       ],
     );
   }
 
-  Widget _metroStationPoints(){
+  Widget _metroStationPoints() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: _prepareStationPointWidget(3)/*<Widget>[
+      children: _prepareStationPointWidget(
+          3) /*<Widget>[
         _stationPoint(),
         _verticalLine(),
         _destStationPoint()
-      ]*/,
+      ]*/
+      ,
     );
   }
 
-  List<Widget> _prepareStationPointWidget(int noOfStations){
+  List<Widget> _prepareStationPointWidget(int noOfStations) {
     List<Widget> col = [];
-    for(int i = 0; i < noOfStations; i++){
-      if(i == 0){
+    for (int i = 0; i < noOfStations; i++) {
+      if (i == 0) {
         col.add(_stationPoint());
-      }else if( i == (noOfStations - 1)){
+      } else if (i == (noOfStations - 1)) {
         col.add(_verticalLine());
         col.add(_stationPoint());
-      }else{
+      } else {
         col.add(_verticalLine());
         col.add(_destStationPoint());
       }
@@ -449,59 +544,53 @@ class _MetroListState extends State<MetroList>{
     return col;
   }
 
-  Widget _stationPoint(){
+  Widget _stationPoint() {
     return Container(
-      margin: EdgeInsets.only(left: 20,top: 10),
-      decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-                color: Colors.lightGreen,
-                blurRadius: 20.0, // has the effect of softening the shadow
-                spreadRadius: 6.0, // has the effect of extending the shadow
-                offset: Offset(
-                  5.0, // horizontal, move right 10
-                  1.0, // vertical, move down 10
-                )
-            )
-          ]
-      ),
+      margin: EdgeInsets.only(left: 20, top: 10),
+      decoration: BoxDecoration(boxShadow: [
+        BoxShadow(
+            color: Colors.lightGreen,
+            blurRadius: 20.0, // has the effect of softening the shadow
+            spreadRadius: 6.0, // has the effect of extending the shadow
+            offset: Offset(
+              5.0, // horizontal, move right 10
+              1.0, // vertical, move down 10
+            ))
+      ]),
       child: Stack(
         children: <Widget>[
-          CustomPaint(painter: CircleShape(Colors.black,10)),
-          CustomPaint(painter: CircleShape(Colors.white,4))
+          CustomPaint(painter: CircleShape(Colors.black, 10)),
+          CustomPaint(painter: CircleShape(Colors.white, 4))
         ],
       ),
     );
   }
 
-  Widget _destStationPoint(){
+  Widget _destStationPoint() {
     return Container(
-      margin: EdgeInsets.only(left: 20,top: 9),
-      decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-                color: Colors.orangeAccent,
-                blurRadius: 20.0, // has the effect of softening the shadow
-                spreadRadius: 6.0, // has the effect of extending the shadow
-                offset: Offset(
-                  5.0, // horizontal, move right 10
-                  1.0, // vertical, move down 10
-                )
-            )
-          ]
-      ),
+      margin: EdgeInsets.only(left: 20, top: 9),
+      decoration: BoxDecoration(boxShadow: [
+        BoxShadow(
+            color: Colors.orangeAccent,
+            blurRadius: 20.0, // has the effect of softening the shadow
+            spreadRadius: 6.0, // has the effect of extending the shadow
+            offset: Offset(
+              5.0, // horizontal, move right 10
+              1.0, // vertical, move down 10
+            ))
+      ]),
       child: Stack(
         children: <Widget>[
-          CustomPaint(painter: CircleShape(Colors.orange,10)),
-          CustomPaint(painter: CircleShape(Colors.white,4))
+          CustomPaint(painter: CircleShape(Colors.orange, 10)),
+          CustomPaint(painter: CircleShape(Colors.white, 4))
         ],
       ),
     );
   }
 
-  Widget _verticalLine(){
+  Widget _verticalLine() {
     return Container(
-      margin: EdgeInsets.only(left: 18,top: 9),
+      margin: EdgeInsets.only(left: 18, top: 9),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(3)),
           color: Colors.black26,
@@ -513,16 +602,14 @@ class _MetroListState extends State<MetroList>{
                 offset: Offset(
                   1.0, // horizontal, move right 10
                   1.0, // vertical, move down 10
-                )
-            )
-          ]
-      ),
+                ))
+          ]),
       width: 5,
       height: 53,
     );
   }
 
-  void _navigateToRoutDetails(){
+  void _navigateToRoutDetails() {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => StationList()),
