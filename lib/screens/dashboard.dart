@@ -4,12 +4,15 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:timesofmetro/bloc/bloc_provider.dart';
+import 'package:timesofmetro/bloc/favourite_route_bloc.dart';
 import 'package:timesofmetro/screens/journey.dart';
 import 'package:timesofmetro/screens/near_by.dart';
 import 'package:timesofmetro/screens/setting.dart';
 import 'package:timesofmetro/utils/resource_utility.dart';
 
 class Dashboard extends StatefulWidget{
+
   @override
   State<StatefulWidget> createState() {
     return DashboardState();
@@ -36,9 +39,13 @@ class DashboardState extends State<Dashboard>{
   @override
   Widget build(BuildContext context) {
     final double statusBarHeight = MediaQuery.of(context).padding.top;
-    return Scaffold(
-      body:PageStorage(child: _children[_currentIndex],bucket: _bucket,),
-      bottomNavigationBar:_bottomNavigation(),
+    FavouriteRouteBloc bloc = FavouriteRouteBloc();
+    return BlocProvider(
+      bloc: bloc,
+      child: Scaffold(
+        body: PageStorage(child: _children[_currentIndex], bucket: _bucket,),
+        bottomNavigationBar: _bottomNavigation(),
+      ),
     );
   }
 

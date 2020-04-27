@@ -1,5 +1,8 @@
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:timesofmetro/bloc/bloc_provider.dart';
+import 'package:timesofmetro/bloc/stations_list_bloc.dart';
+import 'package:timesofmetro/model/station.dart';
 import 'package:timesofmetro/screens/metro_list.dart';
 import 'package:timesofmetro/utils/resource_utility.dart';
 
@@ -21,41 +24,66 @@ class _JourneyState extends State<JourneyPage>{
   @override
   Widget build(BuildContext context) {
     final double statusBarHeight = MediaQuery.of(context).padding.top;
+    StationListBloc bloc = StationListBloc();
     return Scaffold(
       appBar: AppBar(
         title: Text('Journey',style: TextStyle(
-        color: Colors.black,
-        fontSize: 30,
-        fontFamily: 'Montserrat_ExtraBold'
+            color: Colors.black,
+            fontSize: 30,
+            fontFamily: 'Montserrat_ExtraBold'
         )
         ),
         backgroundColor: Colors.white,
       ),
-      body: Container(
-        padding: EdgeInsets.only(top: statusBarHeight),
+      body: BlocProvider(
+        bloc: bloc,
         child: Container(
-          decoration: BoxDecoration(
-            color: ColorResource.AppBackground,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-             // _titleText(),
-              Expanded(
-                child: ListView(
-                  padding: EdgeInsets.only(bottom: 10),
-                  children: <Widget>[
-                    _startJourney(),
-                    favouriteJourneyList(),
-                    _importantUpdate()
-                  ],
-                ),
-              )
-            ],
+          padding: EdgeInsets.only(top: statusBarHeight),
+          child: Container(
+            decoration: BoxDecoration(
+              color: ColorResource.AppBackground,
+            ),
+            child: _buildStationListStreamBuilder(bloc),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildStationListStreamBuilder(StationListBloc bloc) {
+    bloc.fetchStationList();
+    return StreamBuilder(
+      stream: bloc.stationStream,
+      builder: (context, snapshot) {
+        final result = snapshot.data;
+        if (result == null || result.isEmpty) {
+          return Center(
+            child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.orange)
+            ),
+          );
+        }
+        return initView(result);
+      },
+    );
+  }
+
+  Widget initView(List<Station> stationsList) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Expanded(
+          child: ListView(
+            padding: EdgeInsets.only(bottom: 10),
+            children: <Widget>[
+              _startJourney(stationsList),
+              favouriteJourneyList(),
+              _importantUpdate()
+            ],
+          ),
+        )
+      ],
     );
   }
 
@@ -70,20 +98,20 @@ class _JourneyState extends State<JourneyPage>{
     );
   }
 
-  Widget _startJourney(){
+  Widget _startJourney(List<Station> stationsList) {
     return Card(
       margin: EdgeInsets.only(top: 10,left: 10,right: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          _userInput(),
+          _userInput(stationsList),
           _goButton()
         ],
       ),
     );
   }
 
-  Widget _userInput(){
+  Widget _userInput(List<Station> stationsList) {
     return Expanded(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
