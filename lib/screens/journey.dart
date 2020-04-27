@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:timesofmetro/bloc/bloc_provider.dart';
 import 'package:timesofmetro/bloc/stations_list_bloc.dart';
 import 'package:timesofmetro/model/station.dart';
+import 'package:timesofmetro/screens/app_loader.dart';
 import 'package:timesofmetro/screens/metro_list.dart';
 import 'package:timesofmetro/utils/resource_utility.dart';
 
@@ -57,11 +58,7 @@ class _JourneyState extends State<JourneyPage>{
       builder: (context, snapshot) {
         final result = snapshot.data;
         if (result == null || result.isEmpty) {
-          return Center(
-            child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.orange)
-            ),
-          );
+          return AppLoader();
         }
         return initView(result);
       },
