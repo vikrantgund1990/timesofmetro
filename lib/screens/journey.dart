@@ -20,7 +20,12 @@ class JourneyPage extends StatefulWidget{
 }
 class _JourneyState extends State<JourneyPage>{
 
-  final List<String> stations = ['Hadapsar','Shivajinagar','Swargate','Hinjewadi','Nigadi','Baner'];
+  List<Station> stations;
+  GlobalKey sourceKey = GlobalKey<AutoCompleteTextFieldState<Station>>();
+  GlobalKey destKey = GlobalKey<AutoCompleteTextFieldState<Station>>();
+  Station selectedSource, selectedDest;
+  TextEditingController sourceController = TextEditingController();
+  TextEditingController destController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -56,16 +61,19 @@ class _JourneyState extends State<JourneyPage>{
     return StreamBuilder(
       stream: bloc.stationStream,
       builder: (context, snapshot) {
-        final result = snapshot.data;
-        if (result == null || result.isEmpty) {
-          return AppLoader();
+        if (snapshot.hasData) {
+          stations = snapshot.data;
+          return initView();
+        } else if (snapshot.hasError) {
+          return Container();
         }
-        return initView(result);
+        return AppLoader(message: 'Loading journey data please wait',);
+
       },
     );
   }
 
-  Widget initView(List<Station> stationsList) {
+  Widget initView() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,7 +82,7 @@ class _JourneyState extends State<JourneyPage>{
           child: ListView(
             padding: EdgeInsets.only(bottom: 10),
             children: <Widget>[
-              _startJourney(stationsList),
+              _startJourney(),
               favouriteJourneyList(),
               _importantUpdate()
             ],
@@ -95,40 +103,58 @@ class _JourneyState extends State<JourneyPage>{
     );
   }
 
-  Widget _startJourney(List<Station> stationsList) {
+  Widget _startJourney() {
     return Card(
       margin: EdgeInsets.only(top: 10,left: 10,right: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          _userInput(stationsList),
+          _userInput(),
           _goButton()
         ],
       ),
     );
   }
 
-  Widget _userInput(List<Station> stationsList) {
+  Widget _userInput() {
     return Expanded(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          _buildAutoCompleteText('Source'),
+          _buildSourceAutoCompleteText('Source'),
           Divider(
             height: 1,
             thickness: 1,
             color: Colors.black12,
           ),
-          _buildAutoCompleteText('Destination')
+          _buildDestAutoCompleteText('Destination')
         ],
       ),
     );
   }
 
-  Widget _buildAutoCompleteText(String hint){
-    return SimpleAutoCompleteTextField(
+  Widget _buildSourceAutoCompleteText(String hint) {
+    return AutoCompleteTextField<Station>(
+      key: sourceKey,
       suggestions: stations,
+      itemFilter: (suggestion, input) => _filterAutoComplete(suggestion, input),
+      submitOnSuggestionTap: true,
+      controller: sourceController,
+      itemSubmitted: (station) {
+        sourceController.text = station.name;
+        selectedSource = station;
+      },
+      clearOnSubmit: false,
+      itemBuilder: (context, suggestion) =>
+      new Padding(
+          child: new ListTile(
+            title: new Text(suggestion.name, style: TextStyle(
+                fontFamily: FontResource.MontserratRegular,
+                fontSize: 14,
+                color: Colors.black87
+            ),),),
+          padding: EdgeInsets.all(4.0)),
       decoration: InputDecoration(
           border: InputBorder.none,
           hintText: hint,
@@ -143,11 +169,50 @@ class _JourneyState extends State<JourneyPage>{
     );
   }
 
+  Widget _buildDestAutoCompleteText(String hint) {
+    return AutoCompleteTextField<Station>(
+      key: destKey,
+      suggestions: stations,
+      itemFilter: (suggestion, input) => _filterAutoComplete(suggestion, input),
+      submitOnSuggestionTap: true,
+      controller: destController,
+      itemSubmitted: (station) {
+        destController.text = station.name;
+        selectedDest = station;
+      },
+      clearOnSubmit: false,
+      itemBuilder: (context, suggestion) =>
+      new Padding(
+          child: new ListTile(
+            title: new Text(suggestion.name, style: TextStyle(
+                fontFamily: FontResource.MontserratRegular,
+                fontSize: 14,
+                color: Colors.black87
+            ),),),
+          padding: EdgeInsets.all(4.0)),
+      decoration: InputDecoration(
+          border: InputBorder.none,
+          hintText: hint,
+          hintStyle: TextStyle(fontSize: 16,
+              fontFamily: 'Montserrat_Regular'
+          ),
+          contentPadding: EdgeInsets.only(left: 15, top: 18, bottom: 18)
+      ),
+      style: TextStyle(fontSize: 16,
+          fontFamily: 'Montserrat_Regular',
+          color: Colors.black),
+    );
+  }
+
   void _navigateToMetroList(){
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => MetroList()),
     );
+  }
+
+  bool _filterAutoComplete(Station suggestion, String input) {
+    return suggestion.name.toLowerCase().startsWith(input.toLowerCase());
   }
 
   Widget _goButton(){
