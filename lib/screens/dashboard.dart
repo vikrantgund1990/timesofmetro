@@ -1,17 +1,21 @@
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:timesofmetro/bloc/bloc_provider.dart';
-import 'package:timesofmetro/bloc/favourite_route_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:timesofmetro/bloc/route/favourite_route_bloc.dart';
 import 'package:timesofmetro/screens/journey.dart';
 import 'package:timesofmetro/screens/near_by.dart';
 import 'package:timesofmetro/screens/setting.dart';
 import 'package:timesofmetro/utils/resource_utility.dart';
 
-class Dashboard extends StatefulWidget{
+class Dashboard extends StatefulWidget {
+  final List<Widget> _pages = [
+    JourneyPage(key: PageStorageKey('jorney')),
+    TrendingNearByPage(key: PageStorageKey('nearby')),
+    SettingPage(key: PageStorageKey('setting'))
+  ];
 
   @override
   State<StatefulWidget> createState() {
@@ -19,7 +23,7 @@ class Dashboard extends StatefulWidget{
   }
 }
 
-class DashboardState extends State<Dashboard>{
+class DashboardState extends State<Dashboard> {
   final List<String> imgList = [
     'https://images.unsplash.com/photo-1520342868574-5fa3804e551c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=6ff92caffcdd63681a35134a6770ed3b&auto=format&fit=crop&w=1951&q=80',
     'https://images.unsplash.com/photo-1522205408450-add114ad53fe?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=368f45b0888aeb0b7b08e3a1084d3ede&auto=format&fit=crop&w=1950&q=80',
@@ -29,27 +33,29 @@ class DashboardState extends State<Dashboard>{
     'https://images.unsplash.com/photo-1519985176271-adb1088fa94c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=a0c8d632e977f94e5d312d9893258f59&auto=format&fit=crop&w=1355&q=80'
   ];
   int _currentIndex = 0;
-  final List<Widget> _children = [
-    JourneyPage(key: PageStorageKey('jorney')),
-    TrendingNearByPage(key: PageStorageKey('nearby')),
-    SettingPage(key: PageStorageKey('setting'))
-  ];
-  final PageStorageBucket _bucket = PageStorageBucket();
+  FavouriteRouteBloc bloc;
+
+  @override
+  void initState() {
+    super.initState();
+    bloc = FavouriteRouteBloc();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final double statusBarHeight = MediaQuery.of(context).padding.top;
-    FavouriteRouteBloc bloc = FavouriteRouteBloc();
     return BlocProvider(
-      bloc: bloc,
+      create: (context) => bloc,
       child: Scaffold(
-        body: PageStorage(child: _children[_currentIndex], bucket: _bucket,),
+        body: IndexedStack(
+          index: _currentIndex,
+          children: widget._pages,
+        ),
         bottomNavigationBar: _bottomNavigation(),
       ),
     );
   }
 
-  Widget _bottomNavigation(){
+  Widget _bottomNavigation() {
     return CurvedNavigationBar(
       height: 50,
       onTap: onTabTapped,
@@ -57,56 +63,36 @@ class DashboardState extends State<Dashboard>{
       buttonBackgroundColor: ColorResource.AppBackground,
       backgroundColor: ColorResource.AppBackground,
       items: <Widget>[
-        /*Icon(Icons.directions_transit,size: 30,),
-        Icon(Icons.local_activity,size: 30,),
-        Icon(Icons.settings,size: 30,)*/
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Icon(Icons.directions_transit,size: 30,),
+            Icon(
+              Icons.directions_transit,
+              size: 30,
+            ),
           ],
         ),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Icon(Icons.local_activity,size: 30,)
+            Icon(
+              Icons.local_activity,
+              size: 30,
+            )
           ],
         ),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Icon(Icons.settings,size: 30,)
+            Icon(
+              Icons.settings,
+              size: 30,
+            )
           ],
         ),
       ],
     );
   }
-
-  /*Widget _bottomNavigation(){
-    return BottomNavigationBar(
-      onTap: onTabTapped,
-      currentIndex: _currentIndex,
-      backgroundColor: Colors.white,
-      selectedFontSize: 12,
-      selectedLabelStyle: TextStyle(fontFamily: 'Montserrat_SemiBold'),
-      unselectedFontSize: 12,
-      unselectedLabelStyle: TextStyle(fontFamily: 'Montserrat_Regular'),
-      items: [
-        new BottomNavigationBarItem(
-          icon: Icon(Icons.directions_transit),
-          title: Text('Journey'),
-        ),
-        new BottomNavigationBarItem(
-          icon: Icon(Icons.local_activity),
-          title: Text('Near By'),
-        ),
-        new BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            title: Text('Setting')
-        )
-      ],
-    );
-  }*/
 
   void onTabTapped(int index) {
     setState(() {
@@ -114,25 +100,24 @@ class DashboardState extends State<Dashboard>{
     });
   }
 
-  Widget _buildCarousalSlider(){
+  Widget _buildCarousalSlider() {
     return CarouselSlider(
-        items: imgList.map((url){
-                return Container(
-                  margin: EdgeInsets.all(5.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                    child: Image.network(
-                      url,
-                      fit: BoxFit.cover,
-                      width: 1000.0,
-                    ),
-                  ),
-                );
-              }).toList(),
+      items: imgList.map((url) {
+        return Container(
+          margin: EdgeInsets.all(5.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.all(Radius.circular(5.0)),
+            child: Image.network(
+              url,
+              fit: BoxFit.cover,
+              width: 1000.0,
+            ),
+          ),
+        );
+      }).toList(),
       autoPlay: true,
       viewportFraction: 0.9,
       enlargeCenterPage: true,
     );
-
   }
 }

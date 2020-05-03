@@ -1,36 +1,36 @@
 import 'package:flutter/cupertino.dart';
 import 'package:timesofmetro/bloc/bloc.dart';
 
-class BlocProvider<T extends Bloc> extends InheritedWidget {
+class BaseBlocProvider<T extends Bloc> extends StatefulWidget {
   final Widget child;
   final T bloc;
 
-  const BlocProvider({Key key, @required this.bloc, @required this.child})
+  const BaseBlocProvider({Key key, @required this.bloc, @required this.child})
       : super(key: key);
 
   static T of<T extends Bloc>(BuildContext context) {
-    final type = _providerType<BlocProvider<T>>();
-    final BlocProvider<T> provider =
-        context.dependOnInheritedWidgetOfExactType<BlocProvider<T>>();
+    final type = _providerType<BaseBlocProvider<T>>();
+    final BaseBlocProvider<T> provider =
+    context.findAncestorRenderObjectOfType();
     return provider.bloc;
   }
 
   // 3
   static Type _providerType<T>() => T;
 
-  @override
+  /* @override
   bool updateShouldNotify(InheritedWidget oldWidget) {
     return true;
-  }
-
-/* @override
-  State<StatefulWidget> createState() {
-    return _BlocProviderState();
   }*/
 
+  @override
+  State<StatefulWidget> createState() {
+    return _BaseBlocProviderState();
+  }
+
 }
-/*
-class _BlocProviderState extends State<BlocProvider>{
+
+class _BaseBlocProviderState extends State<BaseBlocProvider> {
 
   @override
   Widget build(BuildContext context) {
@@ -43,4 +43,4 @@ class _BlocProviderState extends State<BlocProvider>{
     super.dispose();
   }
 
-}*/
+}

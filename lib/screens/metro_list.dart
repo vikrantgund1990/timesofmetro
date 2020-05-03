@@ -2,6 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:timesofmetro/bloc/bloc_provider.dart';
+import 'package:timesofmetro/bloc/metro/metro_list_bloc.dart';
 import 'package:timesofmetro/screens/station_list_with_time.dart';
 import 'package:timesofmetro/utils/resource_utility.dart';
 
@@ -48,28 +50,31 @@ class MetroList extends StatefulWidget {
 class _MetroListState extends State<MetroList> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: _appBar(),
-        body: Container(
-
-            color: ColorResource.AppBackground,
-            child: CustomScrollView(
-              slivers: <Widget>[
-                SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                      (BuildContext context, int index) {
-                    return _journeyDetails();
-                  }, childCount: 1),
-                ),
-                _timer(),
-                SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                      (BuildContext context, int index) {
-                    return _metroRoutWithTime('Hadapsar', 'Swargate');
-                  }, childCount: 3),
-                )
-              ],
-            )));
+    MetroListBloc bloc = MetroListBloc();
+    return BaseBlocProvider(
+      bloc: bloc,
+      child: Scaffold(
+          appBar: _appBar(),
+          body: Container(
+              color: ColorResource.AppBackground,
+              child: CustomScrollView(
+                slivers: <Widget>[
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                            (BuildContext context, int index) {
+                          return _journeyDetails();
+                        }, childCount: 1),
+                  ),
+                  _timer(bloc),
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                            (BuildContext context, int index) {
+                          return _metroRoutWithTime('Hadapsar', 'Swargate');
+                        }, childCount: 3),
+                  )
+                ],
+              ))),
+    );
   }
 
   Widget _appBar() {
@@ -304,7 +309,11 @@ class _MetroListState extends State<MetroList> {
     );
   }
 
-  Widget _timer() {
+  Widget _timer(MetroListBloc bloc) {
+    bloc.startTimer(DateTime
+        .now()
+        .add(const Duration(seconds: 80))
+        .millisecondsSinceEpoch);
     return SliverPersistentHeader(
       pinned: true,
       delegate: _SliverAppBarDelegate(
@@ -356,12 +365,21 @@ class _MetroListState extends State<MetroList> {
                                     1.0, // vertical, move down 10
                                   ))
                             ]),
-                        child: Text(
-                          '00:01:20',
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontFamily: 'Montserrat_ExtraBold',
-                              color: Colors.black),
+                        child: StreamBuilder(
+                          stream: bloc.timeStream,
+                          builder: (context, snapshot) {
+                            String time = "00:00:00";
+                            if (snapshot.hasData) {
+                              time = snapshot.data;
+                            }
+                            return Text(
+                              time,
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontFamily: 'Montserrat_ExtraBold',
+                                  color: Colors.black),
+                            );
+                          },
                         ),
                       )
                     ],
