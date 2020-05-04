@@ -2,8 +2,10 @@ import 'dart:math' as math;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:timesofmetro/bloc/bloc_provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:timesofmetro/bloc/metro/metro_list_bloc.dart';
+import 'package:timesofmetro/bloc/metro/metro_list_event.dart';
+import 'package:timesofmetro/bloc/metro/metro_list_states.dart';
 import 'package:timesofmetro/screens/station_list_with_time.dart';
 import 'package:timesofmetro/utils/resource_utility.dart';
 
@@ -48,11 +50,19 @@ class MetroList extends StatefulWidget {
 }
 
 class _MetroListState extends State<MetroList> {
+  MetroListBloc bloc;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    bloc = MetroListBloc();
+  }
+
   @override
   Widget build(BuildContext context) {
-    MetroListBloc bloc = MetroListBloc();
-    return BaseBlocProvider(
-      bloc: bloc,
+    return BlocProvider(
+      create: (context) => bloc,
       child: Scaffold(
           appBar: _appBar(),
           body: Container(
@@ -310,10 +320,10 @@ class _MetroListState extends State<MetroList> {
   }
 
   Widget _timer(MetroListBloc bloc) {
-    bloc.startTimer(DateTime
+    bloc.add(StartMetroTimer(DateTime
         .now()
         .add(const Duration(seconds: 80))
-        .millisecondsSinceEpoch);
+        .millisecondsSinceEpoch));
     return SliverPersistentHeader(
       pinned: true,
       delegate: _SliverAppBarDelegate(
@@ -365,7 +375,35 @@ class _MetroListState extends State<MetroList> {
                                     1.0, // vertical, move down 10
                                   ))
                             ]),
-                        child: StreamBuilder(
+                        child: BlocListener<MetroListBloc, MetroListStates>(
+                          listener: (context, state) {
+                            //TODO call refresh metro list
+                          },
+                          child: BlocBuilder<MetroListBloc, MetroListStates>(
+                            builder: (context, state) {
+                              String time = '00:00:00';
+                              if (state is MetroTimerBeginState) {
+                                time = state.time;
+                                return Text(
+                                  time,
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontFamily: 'Montserrat_ExtraBold',
+                                      color: Colors.black),
+                                );
+                              }
+                              return Text(
+                                time,
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontFamily: 'Montserrat_ExtraBold',
+                                    color: Colors.black),
+                              );
+                            },
+                          ),
+                        )
+
+                        /*StreamBuilder(
                           stream: bloc.timeStream,
                           builder: (context, snapshot) {
                             String time = "00:00:00";
@@ -380,7 +418,8 @@ class _MetroListState extends State<MetroList> {
                                   color: Colors.black),
                             );
                           },
-                        ),
+                        )*/
+                        ,
                       )
                     ],
                   ),
@@ -395,7 +434,7 @@ class _MetroListState extends State<MetroList> {
     return GestureDetector(
       onTap: _navigateToRoutDetails,
       child: Card(
-        margin: EdgeInsets.only(left: 15, right: 15,bottom: 15),
+        margin: EdgeInsets.only(left: 15, right: 15, bottom: 15),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),
         ),
