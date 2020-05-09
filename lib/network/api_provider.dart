@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' show Client;
+import 'package:timesofmetro/model/metro_info.dart';
 import 'package:timesofmetro/model/station.dart';
 
 class APIProvider {
@@ -26,6 +27,19 @@ class APIProvider {
       List<Station> stations =
           list.map((data) => Station.fromJson(data)).toList();
       return stations;
+    } else {
+      throw Exception('Failed to load weather');
+    }
+  }
+
+  Future<List<MetroInfo>> fetchMetroInfo() async {
+    final response = await _client.get('$_baseUrl/routes/test3');
+    if (response.statusCode == SUCCESS) {
+      var parseJson = json.decode(response.body);
+      var list = parseJson['data'] as List;
+      List<MetroInfo> metroInfo =
+      list.map((data) => MetroInfo.fromJsonMap(data)).toList();
+      return metroInfo;
     } else {
       throw Exception('Failed to load weather');
     }

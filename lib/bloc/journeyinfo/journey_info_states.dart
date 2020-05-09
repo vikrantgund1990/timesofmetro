@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:timesofmetro/model/metro_info.dart';
 
 abstract class JourneyInfoStates extends Equatable {}
 
@@ -15,13 +16,12 @@ class JourneyLoadingState extends JourneyInfoStates {
 }
 
 class JourneyLoadedState extends JourneyInfoStates {
-  bool success;
+  final List<MetroInfo> metroInfo;
 
-  JourneyLoadedState(this.success);
+  JourneyLoadedState(this.metroInfo);
 
   @override
-  // TODO: implement props
-  List<Object> get props => [success];
+  List<Object> get props => [metroInfo];
 }
 
 class JourneyErrorState extends JourneyInfoStates {

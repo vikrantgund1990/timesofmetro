@@ -1,15 +1,14 @@
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart'
-    show BlocBuilder,
-    BlocListener,
-    BlocProvider;
+    show BlocBuilder, BlocListener, BlocProvider;
 import 'package:timesofmetro/bloc/journeyinfo/journey_info_bloc.dart';
 import 'package:timesofmetro/bloc/journeyinfo/journey_info_event.dart';
 import 'package:timesofmetro/bloc/journeyinfo/journey_info_states.dart';
 import 'package:timesofmetro/bloc/stations/station_list_event.dart';
 import 'package:timesofmetro/bloc/stations/station_list_state.dart';
 import 'package:timesofmetro/bloc/stations/stations_list_bloc.dart';
+import 'package:timesofmetro/model/metro_info.dart';
 import 'package:timesofmetro/model/station.dart';
 import 'package:timesofmetro/screens/app_loader.dart';
 import 'package:timesofmetro/screens/metro_list.dart';
@@ -122,9 +121,27 @@ class _JourneyState extends State<JourneyPage> {
   Widget _startJourney() {
     return Card(
       margin: EdgeInsets.only(top: 20, left: 10, right: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[_userInput(), _goButton()],
+      child: BlocListener<JourneyInfoBloc, JourneyInfoStates>(
+        listener: (context, state) {
+          if (state is JourneyLoadedState) {
+            _navigateToMetroList(state.metroInfo);
+          }
+        },
+        child: BlocBuilder<JourneyInfoBloc, JourneyInfoStates>(
+            builder: (context, state) {
+              if (state is JourneyLoadingState) {
+                return Container(
+                  height: 150,
+                  child: AppLoader(
+                    message: "Journey is about to start. Please wait",
+                  ),
+                );
+              }
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[_userInput(), _goButton()],
+              );
+            }),
       ),
     );
   }
@@ -215,10 +232,14 @@ class _JourneyState extends State<JourneyPage> {
     );
   }
 
-  void _navigateToMetroList() {
+  void _navigateToMetroList(List<MetroInfo> metroInfo) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => MetroList()),
+      MaterialPageRoute(
+          builder: (context) =>
+              MetroList(
+                metroInfo: metroInfo,
+              )),
     );
   }
 
@@ -227,15 +248,34 @@ class _JourneyState extends State<JourneyPage> {
   }
 
   Widget _goButton() {
-    return Container(
+    return RawMaterialButton(
+      onPressed: () {
+        journeyInfoBloc.add(FetchJourneyInfo());
+      },
+      child: new Icon(
+        Icons.train,
+        color: Colors.blue,
+        size: 30.0,
+      ),
+      shape: new CircleBorder(),
+      elevation: 2.0,
+      fillColor: Colors.white,
+      padding: const EdgeInsets.all(10.0),
+    );
+    /*return Container(
       child: BlocListener<JourneyInfoBloc, JourneyInfoStates>(
         listener: (context, state) {
           if (state is JourneyLoadedState) {
-            _navigateToMetroList();
+            _navigateToMetroList(state.metroInfo);
           }
         },
         child: BlocBuilder<JourneyInfoBloc, JourneyInfoStates>(
           builder: (context, state) {
+            if (state is JourneyLoadingState) {
+              return AppLoader(
+                message: "Journey is about to start. Please wait",
+              );
+            }
             return RawMaterialButton(
               onPressed: () {
                 journeyInfoBloc.add(FetchJourneyInfo());
@@ -253,30 +293,6 @@ class _JourneyState extends State<JourneyPage> {
           },
         ),
       ),
-    );
-
-    /*return StreamBuilder(
-      stream: bloc.journeyStream,
-      builder: (context, snapshot) {
-        if (snapshot.hasData && snapshot.data) {
-          _navigateToMetroList();
-        } else {
-          return RawMaterialButton(
-            onPressed: () {
-              bloc.fetchJourneyDetails();
-            },
-            child: new Icon(
-              Icons.train,
-              color: Colors.blue,
-              size: 30.0,
-            ),
-            shape: new CircleBorder(),
-            elevation: 2.0,
-            fillColor: Colors.white,
-            padding: const EdgeInsets.all(10.0),
-          );
-        }
-      },
     );*/
   }
 
@@ -398,7 +414,6 @@ class _JourneyState extends State<JourneyPage> {
 
   Widget _metroRoutWithTime(String source, String dest) {
     return GestureDetector(
-      onTap: _navigateToMetroList,
       child: Card(
         margin: EdgeInsets.only(left: 15, top: 10, right: 15),
         shape: RoundedRectangleBorder(
