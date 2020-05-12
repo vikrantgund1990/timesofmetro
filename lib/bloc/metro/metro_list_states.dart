@@ -1,24 +1,9 @@
 import 'package:equatable/equatable.dart';
+import 'package:timesofmetro/model/metro_info.dart';
 
 abstract class MetroListStates extends Equatable {}
 
 class MetroListInitialState extends MetroListStates {
-  @override
-  // TODO: implement props
-  List<Object> get props => null;
-}
-
-class MetroTimerBeginState extends MetroListStates {
-  final String time;
-
-  MetroTimerBeginState(this.time);
-
-  @override
-  // TODO: implement props
-  List<Object> get props => [time];
-}
-
-class MetroTimerFinishState extends MetroListStates {
   @override
   // TODO: implement props
   List<Object> get props => null;
@@ -37,9 +22,13 @@ class RefreshMetroListLoadingState extends MetroListInitialState {
 }
 
 class RefreshMetroListLoadedState extends MetroListInitialState {
+
+  final List<MetroInfo> filteredList;
+
+  RefreshMetroListLoadedState(this.filteredList);
+
   @override
-  // TODO: implement props
-  List<Object> get props => null;
+  List<Object> get props => [filteredList];
 }
 
 class RefreshMetroListErrorState extends MetroListInitialState {

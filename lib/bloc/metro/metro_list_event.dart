@@ -1,29 +1,13 @@
 import 'package:equatable/equatable.dart';
+import 'package:timesofmetro/model/metro_info.dart';
 
 abstract class MetroListEvent extends Equatable {}
 
-class StartMetroTimer extends MetroListEvent {
-  final int miliseconds;
-
-  StartMetroTimer(this.miliseconds);
-
-  @override
-  // TODO: implement props
-  List<Object> get props => [miliseconds];
-}
-
-class Tick extends MetroListEvent {
-  final String time;
-
-  Tick(this.time);
-
-  @override
-  // TODO: implement props
-  List<Object> get props => [time];
-}
-
 class RefreshMetroList extends MetroListEvent {
+  final List<MetroInfo> metroInfo;
+
+  RefreshMetroList(this.metroInfo);
+
   @override
-  // TODO: implement props
-  List<Object> get props => null;
+  List<Object> get props => [metroInfo];
 }

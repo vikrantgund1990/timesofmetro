@@ -8,12 +8,16 @@ class Route {
   RouteStart start;
   String endTime;
   String journeyTime;
+  int startTimeMsec;
+  int endTimeMsec;
 
   Route.fromJsonMap(Map<String, dynamic> map)
       : end = RouteEnd.fromJsonMap(map["end"]),
         startTime = map["startTime"],
         start = RouteStart.fromJsonMap(map["start"]),
         endTime = map["endTime"],
+        startTimeMsec = map["startTimeMsec"],
+        endTimeMsec = map["endTimeMsec"],
         journeyTime = map["journeyTime"];
 
   Map<String, dynamic> toJson() {
@@ -23,6 +27,8 @@ class Route {
     data['start'] = start == null ? null : start.toJson();
     data['endTime'] = endTime;
     data['journeyTime'] = journeyTime;
+    data['startTimeMsec'] = startTimeMsec;
+    data['endTimeMsec'] = endTimeMsec;
     return data;
   }
 }

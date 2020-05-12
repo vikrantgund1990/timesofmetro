@@ -4,9 +4,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:timesofmetro/bloc/metro/metro_list_bloc.dart';
+import 'package:timesofmetro/bloc/metro/metro_list_event.dart';
 import 'package:timesofmetro/bloc/metro/metro_list_states.dart';
+import 'package:timesofmetro/bloc/metro/timer_bloc.dart';
+import 'package:timesofmetro/bloc/metro/timer_event.dart';
+import 'package:timesofmetro/bloc/metro/timer_state.dart';
 import 'package:timesofmetro/model/metro_info.dart';
 import 'package:timesofmetro/model/route_details.dart';
+import 'package:timesofmetro/screens/app_loader.dart';
 import 'package:timesofmetro/screens/station_list_with_time.dart';
 import 'package:timesofmetro/utils/resource_utility.dart';
 
@@ -55,40 +60,66 @@ class MetroList extends StatefulWidget {
 }
 
 class _MetroListState extends State<MetroList> {
-  MetroListBloc bloc;
+  MetroListBloc metroListBloc;
+  MetroTimerBloc timerBloc;
 
   @override
   void initState() {
     super.initState();
-    bloc = MetroListBloc();
+    metroListBloc = MetroListBloc();
+    metroListBloc.add(RefreshMetroList(widget.metroInfo));
+    timerBloc = MetroTimerBloc();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => bloc,
-      child: Scaffold(
-          appBar: _appBar(),
-          body: Container(
-              color: ColorResource.AppBackground,
-              child: CustomScrollView(
-                slivers: <Widget>[
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                            (BuildContext context, int index) {
-                          return _journeyDetails(widget.metroInfo[0]);
-                        }, childCount: 1),
-                  ),
-                  _timer(bloc),
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                            (BuildContext context, int index) {
-                          return _metroRoutWithTime(widget.metroInfo[index]);
-                        }, childCount: widget.metroInfo.length),
-                  )
-                ],
-              ))),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<MetroListBloc>(
+          create: (context) => metroListBloc,
+        ),
+        BlocProvider<MetroTimerBloc>(
+          create: (context) => timerBloc,
+        )
+      ],
+      child: Scaffold(appBar: _appBar(), body: _buildMetroListStream()),
     );
+  }
+
+  Widget _buildView(List<MetroInfo> metroInfo) {
+    return Container(
+        color: ColorResource.AppBackground,
+        child: CustomScrollView(
+          slivers: <Widget>[
+            SliverList(
+              delegate:
+              SliverChildBuilderDelegate((BuildContext context, int index) {
+                return _journeyDetails(metroInfo[0]);
+              }, childCount: 1),
+            ),
+            //_buildJourneyInfoStream(),
+            _timer(metroInfo[0].details[0].route.startTimeMsec),
+            SliverList(
+              delegate:
+              SliverChildBuilderDelegate((BuildContext context, int index) {
+                return _metroRoutWithTime(metroInfo[index]);
+              }, childCount: metroInfo.length),
+            ),
+          ],
+        ));
+  }
+
+  Widget _buildMetroListStream() {
+    return BlocBuilder(
+        bloc: metroListBloc,
+        builder: (context, state) {
+          if (state is RefreshMetroListLoadedState) {
+            return _buildView(state.filteredList);
+          } else if (state is RefreshMetroListLoadingState) {
+            return AppLoader(message: "Loading");
+          }
+          return Container();
+        });
   }
 
   Widget _appBar() {
@@ -255,10 +286,11 @@ class _MetroListState extends State<MetroList> {
     );
   }
 
-  Widget _timer(MetroListBloc bloc) {
-    /*bloc.add(StartMetroTimer(DateTime.now()
-        .add(const Duration(seconds: 80))
-        .millisecondsSinceEpoch));*/
+  Widget _timer(int startTime) {
+    timerBloc.add(StartMetroTimer(
+        DateTime
+            .fromMillisecondsSinceEpoch(startTime)
+            .millisecondsSinceEpoch));
     return SliverPersistentHeader(
       pinned: true,
       delegate: _SliverAppBarDelegate(
@@ -279,7 +311,7 @@ class _MetroListState extends State<MetroList> {
                       Text(
                         'Your next metro will arrive in',
                         style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 15,
                             fontFamily: 'Montserrat_Regular',
                             color: Colors.red),
                       )
@@ -310,11 +342,15 @@ class _MetroListState extends State<MetroList> {
                                     1.0, // vertical, move down 10
                                   ))
                             ]),
-                        child: BlocListener<MetroListBloc, MetroListStates>(
+                        child: BlocListener<MetroTimerBloc, TimerState>(
+                          key: Key("Timer"),
                           listener: (context, state) {
-                            //TODO call refresh metro list
+                            if (state is MetroTimerFinishState) {
+                              metroListBloc.add(
+                                  RefreshMetroList(widget.metroInfo));
+                            }
                           },
-                          child: BlocBuilder<MetroListBloc, MetroListStates>(
+                          child: BlocBuilder<MetroTimerBloc, TimerState>(
                             builder: (context, state) {
                               String time = '00:00:00';
                               if (state is MetroTimerBeginState) {
@@ -392,7 +428,9 @@ class _MetroListState extends State<MetroList> {
         col.add(_getTimeAndStationRow(
             details[i].route.startTime, details[i].route.start.name));
         col.add(SizedBox(height: 18));
-        col.add(_distDurationHaltsText('20', details[i].route.journeyTime,
+        col.add(_distDurationHaltsText(
+            details[i].routeInfo.distance,
+            details[i].route.journeyTime,
             '${details[i].routeInfo.haltsCount}'));
         col.add(SizedBox(height: 18));
         col.add(_getTimeAndStationRow(
@@ -413,7 +451,9 @@ class _MetroListState extends State<MetroList> {
         col.add(_getTimeAndStationRow(
             details[i].route.startTime, details[i].route.start.name));
         col.add(SizedBox(height: 18));
-        col.add(_distDurationHaltsText('20', details[i].route.journeyTime,
+        col.add(_distDurationHaltsText(
+            details[i].routeInfo.distance,
+            details[i].route.journeyTime,
             '${details[i].routeInfo.haltsCount}'));
         col.add(SizedBox(height: 18));
         col.add(_getTimeAndStationRow(
@@ -466,13 +506,13 @@ class _MetroListState extends State<MetroList> {
 
   Widget _stationName(String name) {
     return Container(
-      padding: EdgeInsets.only(left: 5),
+      padding: EdgeInsets.only(left: 10),
       child: Text(
         name,
         style: TextStyle(
             fontFamily: 'Montserrat_Medium',
             fontSize: 12,
-            color: Colors.black54),
+            color: Colors.black87),
       ),
     );
   }
@@ -480,7 +520,7 @@ class _MetroListState extends State<MetroList> {
   Widget _distDurationHaltsText(String dist, String duration, String halts) {
     return Container(
       padding: EdgeInsets.only(left: 20),
-      child: Text('$dist Km ___ $duration ___ $halts Halts',
+      child: Text('$dist :::: $duration :::: $halts Halts',
           style: TextStyle(fontSize: 12, fontFamily: 'Montserrat_Regular')),
     );
   }
