@@ -13,6 +13,7 @@ import 'package:timesofmetro/model/metro_info.dart';
 import 'package:timesofmetro/model/route_details.dart';
 import 'package:timesofmetro/screens/app_loader.dart';
 import 'package:timesofmetro/screens/station_list_with_time.dart';
+import 'package:timesofmetro/utils/hex_color.dart';
 import 'package:timesofmetro/utils/resource_utility.dart';
 
 import 'circle_shape.dart';
@@ -475,16 +476,15 @@ class _MetroListState extends State<MetroList> {
     List<Widget> col = []; //obj, obj, obj
     for (int i = 0; i < details.length; i++) {
       if (i == 0) {
-        //last station
         col.add(_stationPoint());
-        col.add(_verticalLine());
+        col.add(_verticalLine(details[i].routeLine.color));
         col.add(_destStationPoint());
       } else {
         col.add(SizedBox(
           height: 38,
         ));
         col.add(_stationPoint());
-        col.add(_verticalLine());
+        col.add(_verticalLine(details[i].routeLine.color));
         col.add(_destStationPoint());
       }
     }
@@ -595,15 +595,15 @@ class _MetroListState extends State<MetroList> {
     );
   }
 
-  Widget _verticalLine() {
+  Widget _verticalLine(String color) {
     return Container(
       margin: EdgeInsets.only(left: 18, top: 9),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(3)),
-          color: Colors.black26,
+          color: HexColor(color),
           boxShadow: [
             BoxShadow(
-                color: Colors.black26,
+                color: Color(0xff),
                 blurRadius: 20.0, // has the effect of softening the shadow
                 spreadRadius: 1.0, // has the effect of extending the shadow
                 offset: Offset(

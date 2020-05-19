@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:timesofmetro/model/halts.dart';
 import 'package:timesofmetro/model/metro_info.dart';
+import 'package:timesofmetro/utils/hex_color.dart';
 import 'package:timesofmetro/utils/resource_utility.dart';
 
 import 'circle_shape.dart';
@@ -25,9 +26,9 @@ class StationList extends StatelessWidget {
             Expanded(
               child: ListView.builder(
                 padding: EdgeInsets.only(bottom: 20),
-                itemCount: halts.length,
+                itemCount: 1,
                 itemBuilder: (context, index) {
-                  return _stationWithTime(halts[index].name, halts[index].time);
+                  return _stationWithTime(halts);
                 },
               ),
             )
@@ -39,19 +40,49 @@ class StationList extends StatelessWidget {
 
   List<Halts> _getHaltList() {
     List<Halts> haltList = [];
-    info.details.forEach((f) =>
-    {
-      haltList.add(Halts(name: f.route.start.name, time: f.route.startTime)),
-      haltList.addAll(f.routeInfo.halts),
-      haltList.add(Halts(name: f.route.end.name, time: f.route.endTime))
-    });
+    for (int i = 0; i < info.details.length; i++) {
+      if (i == 0) {
+        haltList.add(Halts(
+            name: info.details[i].route.start.name,
+            time: info.details[i].route.startTime,
+            lineColor: info.details[i].routeLine.color));
+        info.details[i].routeInfo.halts.forEach((h) =>
+        {
+          h.isChangeRout = false,
+          h.lineColor = info.details[i].routeLine.color,
+          haltList.add(h)
+        });
+        haltList.add(Halts(
+            name: info.details[i].route.end.name,
+            time: info.details[i].route.endTime,
+            lineColor: info.details[i].routeLine.color));
+      } else {
+        //haltList.add(Halts(isChangeRout: true));
+        haltList.last.isChangeRout = true;
+        haltList.add(Halts(
+            name: info.details[i].route.start.name,
+            time: info.details[i].route.startTime,
+            lineColor: info.details[i].routeLine.color));
+        info.details[i].routeInfo.halts.forEach((h) =>
+        {
+          h.isChangeRout = false,
+          h.lineColor = info.details[i].routeLine.color,
+          haltList.add(h)
+        });
+        //haltList.addAll(info.details[i].routeInfo.halts);
+        haltList.add(Halts(
+            name: info.details[i].route.end.name,
+            time: info.details[i].route.endTime,
+            lineColor: info.details[i].routeLine.color));
+      }
+    }
     return haltList;
   }
 
   Widget _appBar() {
     return AppBar(
       title: Text(
-        'Stations',
+        'Halts',
         style: TextStyle(
             fontSize: 16,
             color: Colors.black,
@@ -64,18 +95,108 @@ class StationList extends StatelessWidget {
     ;
   }
 
-  Widget _stationWithTime(String name, String time) {
+  Widget _stationWithTime(List<Halts> halts) {
     return Container(
-      margin: EdgeInsets.only(left: 30),
+      margin: EdgeInsets.only(left: 30, top: 30),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          _routesAndStations(),
-          _time(time),
-          _stationName(name)
+          _metroStationPoints(halts),
+          _metroStationNameAndTime(halts)
         ],
       ),
+    );
+  }
+
+  Widget _metroStationPoints(List<Halts> haltList) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: _prepareStationPointWidget(haltList),
+    );
+  }
+
+  List<Widget> _prepareStationPointWidget(List<Halts> haltList) {
+    List<Widget> col = []; //obj, obj, obj
+    for (int i = 0; i < haltList.length; i++) {
+      if (i == (haltList.length - 1)) {
+        col.add(_stationPoint());
+      } else {
+        if (haltList[i].isChangeRout) {
+          col.add(_stationPoint());
+          col.add(SizedBox(
+            height: 60,
+          ));
+        } else {
+          col.add(_stationPoint());
+          col.add(_verticalLine(haltList[i].lineColor));
+        }
+      }
+    }
+    return col;
+  }
+
+  Widget _verticalLine(String color) {
+    return Container(
+      margin: EdgeInsets.only(
+        left: 6,
+      ),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(3)),
+          color: HexColor(color),
+          boxShadow: [
+            BoxShadow(
+                color: Color(0xff),
+                blurRadius: 20.0, // has the effect of softening the shadow
+                spreadRadius: 1.0, // has the effect of extending the shadow
+                offset: Offset(
+                  1.0, // horizontal, move right 10
+                  1.0, // vertical, move down 10
+                ))
+          ]),
+      width: 5,
+      height: 53,
+    );
+  }
+
+  Widget _metroStationNameAndTime(List<Halts> haltList) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: _metroStationNameAndTimeColumn(haltList),
+    );
+  }
+
+  List<Widget> _metroStationNameAndTimeColumn(List<Halts> haltList) {
+    List<Widget> col = []; //1
+    for (int i = 0; i < haltList.length; i++) {
+      if (haltList[i].isChangeRout) {
+        col.add(_getTimeAndStationRow(haltList[i].time, haltList[i].name));
+        //col.add(SizedBox(height: 60));
+        col.add(Container(
+          padding: EdgeInsets.only(top: 20, bottom: 22, left: 20),
+          child: Text(
+            'Switch Metro Here (${haltList[i].name})',
+            style: TextStyle(
+                fontFamily: FontResource.MontserratMedium,
+                fontSize: 18,
+                color: Colors.red),
+          ),
+        ));
+      } else {
+        col.add(_getTimeAndStationRow(haltList[i].time, haltList[i].name));
+        col.add(SizedBox(height: 60));
+      }
+    }
+    return col;
+  }
+
+  Widget _getTimeAndStationRow(String time, String station) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[_time(time), _stationName(station)],
     );
   }
 
@@ -84,8 +205,8 @@ class StationList extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        _routLine(),
         _stationPoint(),
+        _routLine(),
       ],
     );
   }
@@ -126,7 +247,7 @@ class StationList extends StatelessWidget {
       ]),
       child: Stack(
         children: <Widget>[
-          CustomPaint(painter: CircleShape(Colors.green, 12)),
+          CustomPaint(painter: CircleShape(Colors.black87, 12)),
           CustomPaint(painter: CircleShape(Colors.white, 6))
         ],
       ),
@@ -135,7 +256,7 @@ class StationList extends StatelessWidget {
 
   Widget _time(String time) {
     return Container(
-      padding: EdgeInsets.only(left: 15),
+      padding: EdgeInsets.only(left: 25),
       child: Text(
         time,
         style: TextStyle(
