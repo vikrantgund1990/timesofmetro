@@ -1,20 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class TrendingNearByPage extends StatefulWidget {
-  const TrendingNearByPage({Key key}) : super(key: key);
+class MetroTrack extends StatelessWidget {
+  final Color trackColor;
 
-  @override
-  State<StatefulWidget> createState() {
-    return _TrendingNearByState();
-  }
-}
+  MetroTrack(this.trackColor);
 
-class _TrendingNearByState extends State<TrendingNearByPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 30, left: 30),
+      //margin: EdgeInsets.only(top: 30, left: 30),
       child: Stack(
         children: <Widget>[
           Container(
@@ -24,7 +19,7 @@ class _TrendingNearByState extends State<TrendingNearByPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Container(
-                  color: Colors.black87,
+                  color: Colors.black,
                   width: 5,
                   height: 80,
                 ),
@@ -32,11 +27,11 @@ class _TrendingNearByState extends State<TrendingNearByPage> {
                     width: 20,
                     height: 80,
                     child: Container(
-                      color: Colors.orange,
-                    )
-                ),
+                      margin: EdgeInsets.only(top: 5, bottom: 5),
+                      color: trackColor,
+                    )),
                 Container(
-                  color: Colors.black87,
+                  color: Colors.black,
                   width: 5,
                   height: 80,
                 )
@@ -83,12 +78,10 @@ class _TrendingNearByState extends State<TrendingNearByPage> {
                 color: Colors.black,
                 margin: EdgeInsets.only(top: 10),
               ),
-
             ],
           )
         ],
       ),
     );
   }
-
 }

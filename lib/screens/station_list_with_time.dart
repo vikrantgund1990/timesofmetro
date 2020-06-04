@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:timesofmetro/model/halts.dart';
 import 'package:timesofmetro/model/metro_info.dart';
+import 'package:timesofmetro/screens/metro_track.dart';
 import 'package:timesofmetro/utils/hex_color.dart';
 import 'package:timesofmetro/utils/resource_utility.dart';
 
@@ -84,7 +85,7 @@ class StationList extends StatelessWidget {
       title: Text(
         'Halts',
         style: TextStyle(
-            fontSize: 16,
+            fontSize: 18,
             color: Colors.black,
             fontFamily: FontResource.MontserratSemiBold),
       ),
@@ -130,11 +131,15 @@ class StationList extends StatelessWidget {
           ));
         } else {
           col.add(_stationPoint());
-          col.add(_verticalLine(haltList[i].lineColor));
+          col.add(_buildMetroTrack(haltList[i].lineColor));
         }
       }
     }
     return col;
+  }
+
+  Widget _buildMetroTrack(String color) {
+    return MetroTrack(HexColor(color));
   }
 
   Widget _verticalLine(String color) {
@@ -175,7 +180,7 @@ class StationList extends StatelessWidget {
         col.add(_getTimeAndStationRow(haltList[i].time, haltList[i].name));
         //col.add(SizedBox(height: 60));
         col.add(Container(
-          padding: EdgeInsets.only(top: 20, bottom: 22, left: 20),
+          padding: EdgeInsets.only(top: 20, bottom: 18, left: 20),
           child: Text(
             'Switch Metro Here (${haltList[i].name})',
             style: TextStyle(
@@ -186,7 +191,7 @@ class StationList extends StatelessWidget {
         ));
       } else {
         col.add(_getTimeAndStationRow(haltList[i].time, haltList[i].name));
-        col.add(SizedBox(height: 60));
+        col.add(SizedBox(height: 70));
       }
     }
     return col;
@@ -234,7 +239,7 @@ class StationList extends StatelessWidget {
 
   Widget _stationPoint() {
     return Container(
-      margin: EdgeInsets.only(left: 8, bottom: 12, top: 12),
+      margin: EdgeInsets.only(left: 20, bottom: 10, top: 10),
       decoration: BoxDecoration(boxShadow: [
         BoxShadow(
             color: Colors.black38,
@@ -247,7 +252,7 @@ class StationList extends StatelessWidget {
       ]),
       child: Stack(
         children: <Widget>[
-          CustomPaint(painter: CircleShape(Colors.black87, 12)),
+          CustomPaint(painter: CircleShape(Colors.black54, 15)),
           CustomPaint(painter: CircleShape(Colors.white, 6))
         ],
       ),
@@ -256,7 +261,7 @@ class StationList extends StatelessWidget {
 
   Widget _time(String time) {
     return Container(
-      padding: EdgeInsets.only(left: 25),
+      padding: EdgeInsets.only(left: 25, top: 8),
       child: Text(
         time,
         style: TextStyle(
@@ -269,7 +274,7 @@ class StationList extends StatelessWidget {
 
   Widget _stationName(String name) {
     return Container(
-      padding: EdgeInsets.only(left: 10),
+      padding: EdgeInsets.only(left: 10, top: 8),
       child: Text(
         name,
         style: TextStyle(

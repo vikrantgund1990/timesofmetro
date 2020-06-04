@@ -12,6 +12,7 @@ import 'package:timesofmetro/bloc/metro/timer_state.dart';
 import 'package:timesofmetro/model/metro_info.dart';
 import 'package:timesofmetro/model/route_details.dart';
 import 'package:timesofmetro/screens/app_loader.dart';
+import 'package:timesofmetro/screens/error_screen.dart';
 import 'package:timesofmetro/screens/station_list_with_time.dart';
 import 'package:timesofmetro/utils/hex_color.dart';
 import 'package:timesofmetro/utils/resource_utility.dart';
@@ -117,7 +118,10 @@ class _MetroListState extends State<MetroList> {
           if (state is RefreshMetroListLoadedState) {
             return _buildView(state.filteredList);
           } else if (state is RefreshMetroListLoadingState) {
-            return AppLoader(message: "Loading");
+            return AppLoader(message: "Refrshing Metro List");
+          } else if (state is RefreshMetroListEmptyState) {
+            return ErrorScreen(errorType: ErrorType.empty,
+                message: StringResources.empty_metro_list);
           }
           return Container();
         });

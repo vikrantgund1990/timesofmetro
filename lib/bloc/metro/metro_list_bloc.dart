@@ -38,6 +38,10 @@ class MetroListBloc extends Bloc<MetroListEvent, MetroListStates> {
         filteredList.add(metroInfo[i]);
       }
     }
-    yield RefreshMetroListLoadedState(filteredList);
+    if (filteredList.isEmpty) {
+      yield RefreshMetroListEmptyState();
+    } else {
+      yield RefreshMetroListLoadedState(filteredList);
+    }
   }
 }

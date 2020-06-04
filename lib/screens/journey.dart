@@ -262,38 +262,6 @@ class _JourneyState extends State<JourneyPage> {
       fillColor: Colors.white,
       padding: const EdgeInsets.all(10.0),
     );
-    /*return Container(
-      child: BlocListener<JourneyInfoBloc, JourneyInfoStates>(
-        listener: (context, state) {
-          if (state is JourneyLoadedState) {
-            _navigateToMetroList(state.metroInfo);
-          }
-        },
-        child: BlocBuilder<JourneyInfoBloc, JourneyInfoStates>(
-          builder: (context, state) {
-            if (state is JourneyLoadingState) {
-              return AppLoader(
-                message: "Journey is about to start. Please wait",
-              );
-            }
-            return RawMaterialButton(
-              onPressed: () {
-                journeyInfoBloc.add(FetchJourneyInfo());
-              },
-              child: new Icon(
-                Icons.train,
-                color: Colors.blue,
-                size: 30.0,
-              ),
-              shape: new CircleBorder(),
-              elevation: 2.0,
-              fillColor: Colors.white,
-              padding: const EdgeInsets.all(10.0),
-            );
-          },
-        ),
-      ),
-    );*/
   }
 
   Widget favouriteJourneyList() {

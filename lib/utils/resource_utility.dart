@@ -13,4 +13,5 @@ class FontResource{
 
 class StringResources {
   static const String errorException = 'Oops! We are unable to process your request now. Please try again latter.';
+  static const String empty_metro_list = 'Sorry! Seems metro not sceduled for this time.';
 }

@@ -31,6 +31,12 @@ class RefreshMetroListLoadedState extends MetroListInitialState {
   List<Object> get props => [filteredList];
 }
 
+class RefreshMetroListEmptyState extends MetroListInitialState {
+
+  @override
+  List<Object> get props => null;
+}
+
 class RefreshMetroListErrorState extends MetroListInitialState {
   final String error;
 
